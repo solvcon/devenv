@@ -1,0 +1,33 @@
+name: solvcon_devenv
+on:
+  push:
+  pull_request:
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, macos-latest]
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+      - name: dependency (ubuntu)
+        if: matrix.os != 'macos-latest'
+        run: |
+          sudo apt-get -qqy update
+          sudo apt-get -qqy install fakeroot debhelper locales \
+            libreadline7 libssl1.0.0 libffi6 \
+            liblapack3 liblapack-dev libhdf5-100 libhdf5-dev libnetcdf13 \
+            libnetcdf-dev libscotch-6.0 libscotch-dev cython3 python3 \
+            python3-numpy libpython3.6-dev python3-boto python3-paramiko graphviz
+      - name: main build
+        run: |
+          # the trick to mimic user git clone in a specific folder so
+          # SOLVCON_WORKING_ROOT will be consistent
+          mkdir -p ${HOME}/solvcon
+          ln -s ${GITHUB_WORKSPACE} ${HOME}/solvcon/devenv
+
+          ${GITHUB_WORKSPACE}/devenv-cli.sh
+
