@@ -9,14 +9,12 @@ set -x
 SOLVCON_PROJECT=${1:-${HOME}/solvcon}
 SCSRC="${SOLVCON_PROJECT}/solvcon"
 SCSRC_WORKING="${SOLVCON_PROJECT}/solvcon-working"
+SCDE_SRC=${SOLVCON_DEVENV_SRC:-${SOLVCON_PROJECT}/devenv}
 MINICONDA_DIR="${SCSRC_WORKING}/miniconda"
 
 export PATH="${SCSRC}:${MINICONDA_DIR}/bin:${PATH}"
 
 mkdir -p ${SCSRC_WORKING}
-
-# fetch SOLVCON source
-git clone https://github.com/solvcon/solvcon.git ${SCSRC}
 
 # prepare miniconda
 # please note contrib/conda.sh will use python 3.6 if you want to install
@@ -45,11 +43,14 @@ conda update -q conda
 conda create -p ${SCSRC_WORKING}/venv-conda --no-default-packages -y python
 source activate ${SCSRC_WORKING}/venv-conda
 
+# prepare all packages to build SOLVCON
+${SCDE_SRC}/conda.sh
+${SCDE_SRC}/build-pybind11-in-conda.sh
+
 set +x
 
-# prepare all packages to build SOLVCON
-${SCSRC}/contrib/conda.sh
-${SCSRC}/contrib/build-pybind11-in-conda.sh
+# fetch SOLVCON source
+git clone https://github.com/solvcon/solvcon.git ${SCSRC}
 
 pushd ${SCSRC}
 # make libmarch.so and SOLVCON

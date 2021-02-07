@@ -1,4 +1,5 @@
-SOLVCON_WORKING_ROOT=${HOME}/solvcon/devenv
+# SCDE: SOLVCON Dev Env
+SCDE_SRC=${HOME}/solvcon/devenv
 
-mkdir -p ${SOLVCON_WORKING_ROOT}
-source ${SOLVCON_WORKING_ROOT}/prepare-solvcon-dev.sh
+mkdir -p ${SCDE_SRC}
+source ${SCDE_SRC}/prepare-solvcon-dev.sh
