@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+[ -n "${DEVENVDEBUG}" ] && {
+  set -x
+}
+
+. ${DEVENVROOT}/scripts/func.d/bash_utils
+
+cmd=$1
+if [ -f "${DEVENVROOT}/scripts/cmd.d/${cmd}" ]; then
+  shift
+  bash "${DEVENVROOT}/scripts/cmd.d/${cmd}" "$@"
+elif [[ -z ${cmd} || ${cmd} = help ]]; then
+  display "Usage: ${0##*/} [command]
+
+Description:
+devenv management tool
+
+Commands:
+add   - create a new devenv environment
+use   - select an environment to use
+del   - delete an environment directory
+off   - deactivate environment
+build - build applications"
+else
+  display -e "Unrecognized command line argument: '${cmd}'"
+fi
+
+# vim: set et nu nobomb fenc=utf8 ft=bash ff=unix sw=2 ts=2:

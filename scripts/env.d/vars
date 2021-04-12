@@ -1,0 +1,15 @@
+export DEVENVFLAVOR=""
+export DEVENVPREFIX=""
+export DEVENVPATH_BACKUP="${PATH}"
+case "$(uname)" in
+  Darwin)
+    export DEVENVLIBRARY_PATH_BACKUP="${DYLD_FALLBACK_LIBRARY_PATH}"
+    export NP=$(sysctl -n hw.ncpu)
+    ;;
+  Linux)
+    export DEVENVLIBRARY_PATH_BACKUP=${LD_LIBRARY_PATH}
+    export NP=$(cat /proc/cpuinfo | grep processor | wc -l)
+    ;;
+esac
+
+# vim: set et nu nobomb fenc=utf8 ft=bash ff=unix sw=2 ts=2:

@@ -1,0 +1,12 @@
+. ${DEVENVROOT}/scripts/func.d/bash_utils
+
+if [ ! -d "${DEVENVROOT}/flavors/$1" ]; then
+  mkdir -p ${DEVENVROOT}/flavors/$1
+  display "create '${1}' dev environment."
+elif [ -z $1 ]; then
+  display -e "must need an argument!!"
+else
+  display -e "'$1' already exist!!"
+fi
+
+# vim: set et nu nobomb fenc=utf8 ft=bash ff=unix sw=2 ts=2:
