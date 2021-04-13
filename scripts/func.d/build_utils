@@ -1,0 +1,30 @@
+buildcmd () {
+  echo "run command: ${@:2}"
+  { time "${@:2}" ; } 2>&1 | tee $1
+  echo "done; log file: $(cd "$(dirname $1)" && pwd)/$1"
+}
+
+syncgit () {
+  local giturl=$1
+  local pkgname=$2
+  local pkgbranch=$3
+  local pkgfull=${pkgname}-${pkgbranch}
+  local pkgrepo=${giturl}/${pkgname}.git
+
+  # unpack (clone)
+  mkdir -p ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src
+  pushd ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src > /dev/null
+
+  if [ ! -d ${pkgfull} ] ; then
+    git clone -b ${pkgbranch} ${pkgrepo} ${pkgfull}
+  else
+    pushd ${pkgfull}
+    git checkout ${pkgbranch}
+    git pull origin ${pkgbranch}
+    popd > /dev/null
+  fi
+
+  popd > /dev/null
+}
+
+# vim: set et nu nobomb fenc=utf8 ft=bash ff=unix sw=2 ts=2:

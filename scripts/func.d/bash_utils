@@ -1,0 +1,12 @@
+LS_PATH=$(unalias ls &> /dev/null; command -v ls) || display -e "couldn't find ls"
+
+display() {
+  if [[ "${1}" != "-e" ]]; then
+    echo -e "${1}"
+  else
+    echo -e "${2}" >&2
+    exit 87
+  fi
+}
+
+# vim: set et nu nobomb fenc=utf8 ft=sh ff=unix sw=2 ts=2:

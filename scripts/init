@@ -1,0 +1,35 @@
+export DEVENVROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+. ${DEVENVROOT}/scripts/env.d/vars
+
+devenv() {
+  . ${DEVENVROOT}/scripts/func.d/bash_utils
+
+  if [[ "$1" == "use" ]]; then
+    shift
+
+    if [ ! -d "${DEVENVROOT}/flavors/$1" ]; then
+      display "not hacking"
+      return
+    fi
+
+    if [ ! -z "${DEVENVFLAVOR}" ] ; then
+      . ${DEVENVROOT}/scripts/env.d/devenv_impl nameremove ${DEVENVFLAVOR}
+    fi
+
+    . ${DEVENVROOT}/scripts/env.d/devenv_impl namemunge $1
+    echo "now using '${DEVENVFLAVOR}'"
+  elif [[ "$1" == "off" ]]; then
+    if [ -z "${DEVENVFLAVOR}" ] ; then
+      display "\$DEVENVFLAVOR not defined"
+      return
+    fi
+
+    display "'${DEVENVFLAVOR}' to be turned off"
+    . ${DEVENVROOT}/scripts/env.d/devenv_impl nameremove ${DEVENVFLAVOR}
+  else
+    ${DEVENVROOT}/bin/devenv "$@"
+  fi
+}
+
+# vim: set et nu nobomb fenc=utf8 ft=bash ff=unix sw=2 ts=2:
