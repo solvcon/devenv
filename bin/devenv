@@ -3,6 +3,10 @@
   set -x
 }
 
+if [ -z "${DEVENVROOT}" ] ; then
+  export DEVENVROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+fi
+
 . ${DEVENVROOT}/scripts/func.d/bash_utils
 
 cmd=$1
