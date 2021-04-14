@@ -4,7 +4,8 @@
 }
 
 if [ -z "${DEVENVROOT}" ] ; then
-  export DEVENVROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+  echo "Environment variable DEVENVROOT not found"
+  exit 1
 fi
 
 . ${DEVENVROOT}/scripts/func.d/bash_utils
