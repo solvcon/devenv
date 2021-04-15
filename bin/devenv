@@ -3,6 +3,11 @@
   set -x
 }
 
+if [ -z "${DEVENVROOT}" ] ; then
+  echo "Environment variable DEVENVROOT not found"
+  exit 1
+fi
+
 . ${DEVENVROOT}/scripts/func.d/bash_utils
 
 cmd=$1
