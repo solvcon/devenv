@@ -29,5 +29,5 @@ jobs:
           mkdir -p ${HOME}/solvcon
           ln -s ${GITHUB_WORKSPACE} ${HOME}/solvcon/devenv
 
-          ${GITHUB_WORKSPACE}/devenv-cli.sh
+          ${GITHUB_WORKSPACE}/bin/build-application-solvcon-devenv.sh
 

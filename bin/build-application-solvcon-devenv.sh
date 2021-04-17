@@ -1,5 +1,5 @@
 # SCDE: SOLVCON Dev Env
-SCDE_SRC=${HOME}/solvcon/devenv
+SCDE_SRC=${HOME}/solvcon/devenv/applications/solvcon
 
 mkdir -p ${SCDE_SRC}
 source ${SCDE_SRC}/prepare-solvcon-dev.sh
