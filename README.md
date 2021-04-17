@@ -17,12 +17,30 @@ following features:
 The environment consists of scripts for building dependencies and managing
 them.  More information will be added as the project becomes more complete.
 
+
+# Pre-requisite
+
+By using the following command to setup all necessary environment variables:
+
+```
+source scripts/init
+```
+
+
 ## Usage
 
 By invoking this one command should bring you the whole SOLVCON stack:
 
 ```bash
-./devenv.sh
+./bin/build-application-solvcon-devenv.sh
 ```
+
+You may use the management tool `devenv` to build the target package you need from source.
+By placing the command to see the details of usage:
+
+```
+devenv
+```
+
 
 <!-- vim: set ff=unix ft=markdown fenc=utf8 sw=2 tw=79: -->
