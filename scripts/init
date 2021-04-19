@@ -32,4 +32,35 @@ devenv() {
   fi
 }
 
+_devenv() {
+  . ${DEVENVROOT}/scripts/func.d/bash_utils
+
+  local cur prev opts base
+	COMPREPLY=()
+	cur="${COMP_WORDS[COMP_CWORD]}"
+	base="${COMP_WORDS[0]}"
+	cmd="${COMP_WORDS[1]}"
+
+  case "${cmd}" in
+    use|del)
+      [[ $COMP_CWORD > 2 ]] && return 1
+      COMPREPLY=( $(compgen -W "$(get_list flavor)" -- ${cur}) )
+			return 0
+      ;;
+    build)
+      [[ $COMP_CWORD > 2 ]] && return 1
+      COMPREPLY=( $(compgen -W "$(get_list build)" -- ${cur}) )
+			return 0
+      ;;
+    *)
+      [[ $COMP_CWORD > 1 ]] && return 1
+      cmds=$(get_list cmd)
+      cmds+=" use off"
+      COMPREPLY=($(compgen -W "${cmds}" -- ${cur}))
+      return 0
+      ;;
+  esac
+}
+complete -F _devenv devenv
+
 # vim: set et nu nobomb fenc=utf8 ft=bash ff=unix sw=2 ts=2:

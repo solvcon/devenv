@@ -9,4 +9,20 @@ display() {
   fi
 }
 
+get_list() {
+  local dir=""
+  case $1 in
+    flavor)
+      dir="${DEVENVROOT}/flavors"
+      ;;
+    build)
+      dir="${DEVENVROOT}/scripts/build.d"
+      ;;
+    cmd)
+      dir="${DEVENVROOT}/scripts/cmd.d"
+      ;;
+  esac
+  echo $(${LS_PATH} -1 ${dir} 2>/dev/null)
+}
+
 # vim: set et nu nobomb fenc=utf8 ft=sh ff=unix sw=2 ts=2:
