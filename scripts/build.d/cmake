@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+set -e
+
+pkgname=CMake
+pkgbranch=${VERSION:-master}
+pkgfull=$pkgname-$pkgbranch
+
+# unpack (clone)
+syncgit https://github.com/Kitware ${pkgname} ${pkgbranch}
+
+cfgcmd=("./configure")
+cfgcmd+=("--prefix=${DEVENVPREFIX}")
+
+pushd ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
+
+  buildcmd configure.log "${cfgcmd[@]}"
+  buildcmd make.log make -j ${NP}
+  buildcmd install.log make install
+
+popd > /dev/null
+
+# vim: set et nobomb ft=bash ff=unix fenc=utf8:
