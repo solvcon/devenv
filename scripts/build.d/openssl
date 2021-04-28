@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+set -e
+
+pkgname=openssl
+pkgbranch=${VERSION:-master}
+pkgfull=${pkgname}-${pkgbranch}
+
+syncgit https://github.com/openssl ${pkgname} ${pkgbranch}
+
+pushd ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
+
+  cfgcmd=("./config")
+  cfgcmd+=("--prefix=${DEVENVPREFIX}")
+  cfgcmd+=("--openssldir=${DEVENVPREFIX}/share/ssl")
+
+  # build.
+  buildcmd configure.log "${cfgcmd[@]}"
+  buildcmd make.log make -j ${NP}
+  buildcmd install.log make -j ${NP} install
+
+popd > /dev/null
+# vim: set et nobomb ft=bash ff=unix fenc=utf8:

@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+set -e
+
+pkgname=bzip2
+
+git clone git://sourceware.org/git/bzip2.git ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src/${pkgname}
+
+pushd ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src/${pkgname} > /dev/null
+
+  INSTALL_PREFIX=${DEVENVPREFIX}
+  buildcmd make.log make install PREFIX=${INSTALL_PREFIX} -j ${NP}
+
+popd > /dev/null
+# vim: set et nobomb ft=bash ff=unix fenc=utf8:

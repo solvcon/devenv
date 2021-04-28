@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+set -e
+
+pkgname=cpython
+pkgbranch=${VERSION:-master}
+pkgfull=${pkgname}-${pkgbranch}
+
+syncgit https://github.com/python ${pkgname} ${pkgbranch}
+
+pushd ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
+
+  # build
+  PREFIX=${DEVENVPREFIX}
+  ARCH=64
+
+  if [ $(uname) == Darwin ]; then
+    export CPPFLAGS="-I${PREFIX}/include ${CPPFLAGS}"
+    export LDFLAGS="-Wl,-rpath,${PREFIX}/lib -L${PREFIX}/lib ${LDFLAGS}"
+    sed -i -e "s/@OSX_ARCH@/${ARCH}/g" Lib/distutils/unixccompiler.py
+  elif [ $(uname) == Linux ]; then
+    export CPPFLAGS="-I${PREFIX}/include ${CPPFLAGS}"
+    export LDFLAGS="-L${PREFIX}/lib -Wl,-rpath=${PREFIX}/lib,--no-as-needed"
+  fi
+
+  cfgcmd=("./configure")
+  cfgcmd+=("--prefix=${PREFIX}")
+  cfgcmd+=("--enable-shared")
+  cfgcmd+=("--enable-ipv6")
+  cfgcmd+=("--with-ensurepip=no")
+  cfgcmd+=("--enable-optimizations")
+  cfgcmd+=("--with-lto")
+  cfgcmd+=("--with-tcltk-includes=-I${PREFIX}/include")
+  cfgcmd+=("--with-tcltk-libs=\"-L${PREFIX}/lib -ltcl8.5 -ltk8.5\"")
+  cfgcmd+=("--with-openssl=${DEVENVPREFIX}")
+
+  if [[ $(uname) == Darwin ]] ; then
+    cfgcmd+=("LLVM_AR=/usr/bin/ar")
+  fi
+
+  cfgcmd+=("--enable-loadable-sqlite-extensions")
+
+  if [[ ${DEVENVFLAVOR} == dbg* ]] ; then
+    cfgcmd+=("--with-pydebug")
+  fi
+
+  # build.
+  buildcmd configure.log "${cfgcmd[@]}"
+  buildcmd make.log make build_all -j ${NP}
+  buildcmd install.log make install
+
+  curl https://bootstrap.pypa.io/get-pip.py | ${PREFIX}/bin/python3
+  rm -f ${PREFIX}/bin/pip
+
+popd > /dev/null
+
+# vim: set et nobomb ft=bash ff=unix fenc=utf8:
