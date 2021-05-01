@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+set -e
+
+pkgname=gmsh
+pkgbranch=${VERSION:-master}
+pkgfull=$pkgname-$pkgbranch
+
+# unpack (clone)
+syncgit https://gitlab.onelab.info/gmsh/ ${pkgname} ${pkgbranch}
+
+pushd ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
+
+  mkdir -p build
+
+  cd build
+
+  cmakecmd=("cmake")
+  cmakecmd+=("-DCMAKE_INSTALL_PREFIX=${DEVENVPREFIX}")
+  cmakecmd+=("../")
+
+  buildcmd cmake.log "${cmakecmd[@]}"
+  buildcmd make.log make -j ${NP}
+  buildcmd install.log make install
+
+popd > /dev/null
+
+# vim: set et nobomb ft=bash ff=unix fenc=utf8:
