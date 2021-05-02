@@ -18,7 +18,7 @@ The environment consists of scripts for building dependencies and managing
 them.  More information will be added as the project becomes more complete.
 
 
-# Pre-requisite
+## Pre-requisite
 
 By using the following command to setup all necessary environment variables:
 
@@ -41,6 +41,11 @@ By placing the command to see the details of usage:
 ```
 devenv
 ```
+
+
+## Development
+### Build Scripts
+We strongly suggest you to enable shared library build by default in your package build script, because it is expected to launch a lot of applications built by `devenv` for `devenv` users, and the launched toolchain may need significant memory. Enabling shared library to build your package will provide more flexibility and saves significant memory.
 
 
 <!-- vim: set ff=unix ft=markdown fenc=utf8 sw=2 tw=79: -->

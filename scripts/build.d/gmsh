@@ -6,7 +6,6 @@ pkgname=gmsh
 pkgbranch=${VERSION:-master}
 pkgfull=$pkgname-$pkgbranch
 
-# unpack (clone)
 syncgit https://gitlab.onelab.info/gmsh/ ${pkgname} ${pkgbranch}
 
 pushd ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
@@ -17,6 +16,7 @@ pushd ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
 
   cmakecmd=("cmake")
   cmakecmd+=("-DCMAKE_INSTALL_PREFIX=${DEVENVPREFIX}")
+  cmakecmd+=("-DBUILD_SHARED_LIBS=ON")
   cmakecmd+=("../")
 
   buildcmd cmake.log "${cmakecmd[@]}"
