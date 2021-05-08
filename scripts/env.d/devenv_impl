@@ -17,6 +17,14 @@ nameremove() {
   eval "export $1=$(echo -n ${!1} | awk -v RS=: -v ORS=: -v var="$2" '$0 != var' | sed 's/:*$//')"
 }
 
+# Necessary evil
+if [[ -f "/etc/os-release" ]]; then
+    str=$(grep -o 'ubuntu' /etc/os-release 2> /dev/null | head -1)
+    if [[ ${str} == "ubuntu" ]]; then
+      sudo apt install build-essential -y
+    fi
+fi
+
 case "$(uname)" in
   Darwin)
     lib_path=DYLD_FALLBACK_LIBRARY_PATH
