@@ -3,7 +3,7 @@
 set -e
 
 pkgname=cpython
-pkgbranch=${VERSION:-master}
+pkgbranch=${VERSION:-main}
 pkgfull=${pkgname}-${pkgbranch}
 
 syncgit https://github.com/python ${pkgname} ${pkgbranch}
