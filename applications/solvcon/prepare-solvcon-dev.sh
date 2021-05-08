@@ -44,6 +44,10 @@ conda create -p ${SCSRC_WORKING}/venv-conda --no-default-packages -y python
 source activate ${SCSRC_WORKING}/venv-conda
 
 # prepare all packages to build SOLVCON
+source ${DEVENV_TOOL}/scripts/init
+devenv add ${DEVENV_FLAVOR}
+devenv use ${DEVENV_FLAVOR}
+VERSION=gmsh_3_0_6 devenv build gmsh
 ${SCDE_SRC}/conda.sh
 ${SCDE_SRC}/build-pybind11-in-conda.sh
 
