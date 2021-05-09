@@ -2,6 +2,20 @@ export DEVENVROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 . ${DEVENVROOT}/scripts/env.d/vars
 
+#----------------------------------------------------------------------------------------------------
+#    make sure system make is installed and reachable 
+#----------------------------------------------------------------------------------------------------
+#  find make
+MAKE=$(which make 2>/dev/null)
+
+if (( $? == 1 )); then 
+  echo " "
+  echo "ERROR: make needs to be installed to run devenv. "
+  echo " Install make using the command such as ' apt install build-essential' as root and try again. "
+  echo " "
+  exit
+fi
+
 devenv() {
   . ${DEVENVROOT}/scripts/func.d/bash_utils
 
