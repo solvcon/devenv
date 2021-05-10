@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+
+set -e
+
+pkgname=numpy
+pkgbranch=${VERSION:-main}
+pkgfull=${pkgname}-${pkgbranch}
+
+# unpack (clone / pull)
+syncgit https://github.com/numpy ${pkgname} ${pkgbranch}
+
+pushd ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
+
+# prepare files for building.
+if [ ! -e ${DEVENVPREFIX}/bin/python3 ]; then
+    display -e "Python3 not exist!!"
+    exit
+fi
+
+PYTHON=${DEVENVPREFIX}/bin/python3
+
+rm -f site.cfg
+
+if [ $(uname) == Darwin ] ; then
+  echo "Darwin"
+  cat >> site.cfg << EOF
+[openblas]
+libraries = openblas
+library_dirs = ${DEVENVPREFIX}/lib
+include_dirs = ${DEVENVPREFIX}/include/openblas
+runtime_library_dirs = ${DEVENVPREFIX}/lib
+EOF
+elif [ $(uname) == Linux ] ; then
+  cat >> site.cfg << EOF
+[openblas]
+libraries = openblas
+library_dirs = ${DEVENVPREFIX}/lib
+include_dirs = ${DEVENVPREFIX}/include/openblas
+runtime_library_dirs = ${DEVENVPREFIX}/lib
+EOF
+fi
+
+rm -f setup.cfg
+cat >> setup.cfg << EOF
+# See the docstring in versioneer.py for instructions. Note that you must
+# re-run 'versioneer.py setup' after changing this section, and commit the
+# resulting files.
+
+[versioneer]
+VCS = git
+style = pep440
+versionfile_source = numpy/_version.py
+versionfile_build = numpy/_version.py
+tag_prefix = v
+parentdir_prefix = numpy-
+
+[config_fc]
+fcompiler = gfortran
+EOF
+
+# buildcmd build.log $PYTHON setup.py build -j $NP
+buildcmd build.log ${PYTHON} setup.py build -j ${NP} install --prefix=${DEVENVPREFIX}
+
+popd > /dev/null
+
+# Check lapack version.
+${PYTHON} -c "import numpy as np ; np.show_config()"
+
+# vim: set et nobomb ft=bash ff=unix fenc=utf8:

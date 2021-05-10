@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+set -e
+
+pkgname=netcdf-c
+pkgbranch=${VERSION:-v4.4.1.1}
+pkgfull=${pkgname}-${pkgbranch}
+
+# unpack (clone / pull)
+syncgit https://github.com/Unidata ${pkgname} ${pkgbranch}
+
+pushd ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
+
+  mkdir -p build
+  cd build
+
+  cmakecmd=("cmake")
+  cmakecmd+=("-DCMAKE_INSTALL_PREFIX=${DEVENVPREFIX}")
+  cmakecmd+=("-DBUILD_SHARED_LIBS=ON")
+  cmakecmd+=("-DENABLE_NETCDF_4=ON")
+  cmakecmd+=("-DENABLE_DAP=OFF")
+  cmakecmd+=("-DENABLE_TESTS=OFF")
+  cmakecmd+=("../")
+
+  buildcmd cmake.log "${cmakecmd[@]}"
+  buildcmd make.log make install -j $NP
+
+popd
+
+# vim: set et nobomb ft=bash ff=unix fenc=utf8:

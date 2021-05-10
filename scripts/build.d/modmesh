@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+set -e
+
+pkgname=modmesh
+pkgbranch=${VERSION:-master}
+pkgfull=$pkgname-$pkgbranch
+
+if [ ! -e ${DEVENVPREFIX}/bin/python3 ]; then
+  display -e "Python3 not exist!!"
+  exit
+fi
+
+PYTHON=${DEVENVPREFIX}/bin/python3
+
+syncgit https://github.com/solvcon ${pkgname} ${pkgbranch}
+
+pushd ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
+
+  if [ -e build ]; then
+    rm -rf build
+  fi
+
+  mkdir -p build
+
+  pushd ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src/${pkgfull}/build > /dev/null
+
+    cmakecmd=("cmake")
+    cmakecmd+=("-DCMAKE_INSTALL_PREFIX=${DEVENVPREFIX}")
+    cmakecmd+=("../")
+
+    if [[ ${DEVENVFLAVOR} == dbg* ]] ; then
+      cmakecmd+=("-DCMAKE_BUILD_TYPE=Debug")
+    fi
+
+    buildcmd cmake.log "${cmakecmd[@]}"
+    buildcmd make.log make -j ${NP}
+    buildcmd install.log make install
+
+  popd > /dev/null
+
+  buildcmd build.log ${PYTHON} setup.py build -j ${NP} install --prefix=${DEVENVPREFIX}
+
+popd > /dev/null
+
+# vim: set et nu nobomb fenc=utf8 ft=bash ff=unix sw=2 ts=2:

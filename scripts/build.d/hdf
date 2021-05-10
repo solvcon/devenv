@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+set -e
+
+pkgname=hdf5
+pkgbranch=${VERSION:-1.8/master}
+pkgfull=${pkgname}-${pkgbranch}
+
+# unpack (clone / pull)
+syncgit https://github.com/HDFGroup ${pkgname} ${pkgbranch}
+
+pushd ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
+
+  mkdir -p build
+  cd build
+
+  cmakecmd=("cmake")
+  cmakecmd+=("-DCMAKE_INSTALL_PREFIX=${DEVENVPREFIX}")
+  cmakecmd+=("-DBUILD_SHARED_LIBS=ON")
+  cmakecmd+=("-DDEFAULT_API_VERSION=v18")
+  cmakecmd+=("../")
+
+  buildcmd cmake.log "${cmakecmd[@]}"
+  buildcmd make.log make install -j $NP
+
+popd
+# vim: set et nobomb ft=bash ff=unix fenc=utf8:

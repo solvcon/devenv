@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+set -e
+
+pkgname=OpenBLAS
+pkgbranch=${VERSION:-develop}
+pkgfull=${pkgname}-${pkgbranch}
+
+# unpack (clone / pull)
+syncgit https://github.com/xianyi ${pkgname} ${pkgbranch}
+
+pushd ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
+
+  mkdir -p build
+  cd build
+
+  cmakecmd=("cmake")
+  cmakecmd+=("-DCMAKE_Fortran_COMPILER=gfortran")
+  cmakecmd+=("-DCMAKE_INSTALL_PREFIX=${DEVENVPREFIX}")
+  cmakecmd+=("-DBUILD_SHARED_LIBS=ON")
+  cmakecmd+=("-DCMAKE_Fortran_FLAGS=-fPIC -O3")
+
+  if [[ ${DEVENVFLAVOR} == dbg* ]] ; then
+    cmakecmd+=("-DCMAKE_BUILD_TYPE=Debug")
+  fi
+
+  cmakecmd+=("../")
+  buildcmd cmake.log "${cmakecmd[@]}"
+  buildcmd make.log make install -j $NP
+
+popd > /dev/null
+
+# vim: set et nobomb ft=bash ff=unix fenc=utf8:
