@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+set -e
+source ${DEVENVROOT}/scripts/func.d/build_utils
+
+pkgname=cython
+pkgbranch=${VERSION:-master}
+pkgfull=${pkgname}-${pkgbranch}
+
+syncgit https://github.com/cython ${pkgname} ${pkgbranch}
+
+pushd ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
+
+  PYTHON=${DEVENVPREFIX}/bin/python3
+
+  buildcmd build.log ${PYTHON} setup.py build -j ${NP}
+  buildcmd install.log ${PYTHON} setup.py install
+
+popd > /dev/null
+
+# vim: set et nobomb ft=bash ff=unix fenc=utf8:
