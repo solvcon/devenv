@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+set -e
+
+pkgname=scotch
+pkgbranch=${VERSION:-master}
+pkgfull=${pkgname}-${pkgbranch}
+
+# unpack (clone / pull)
+syncgit https://gitlab.inria.fr/scotch ${pkgname} ${pkgbranch}
+
+pushd ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
+  pushd ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src/${pkgfull}/src
+    # build.
+    rm -f Makefile.inc
+    echo "prefix = $DEVENVPREFIX" > Makefile.inc
+    echo '' >> Makefile.inc
+    if [ $(uname) == Darwin ]; then
+      cat >> Makefile.inc << EOF
+EXE          =
+LIB          = .a
+OBJ          = .o
+MAKE         = make
+AR           = ar
+ARFLAGS      = -ruv
+CAT          = cat
+CCS          = gcc
+CCP          = mpicc
+CCD          = gcc
+CFLAGS       = -O3 -fPIC -DCOMMON_PTHREAD_BARRIER -DCOMMON_PTHREAD -DSCOTCH_CHECK_AUTO -DCOMMON_RANDOM_FIXED_SEED -DCOMMON_TIMING_OLD -DSCOTCH_RENAME -DCOMMON_FILE_COMPRESS_BZ2 -DCOMMON_FILE_COMPRESS_GZ
+CLIBFLAGS    =
+LDFLAGS      = -lz -lm -pthread -lbz2
+CP           = cp
+LEX          = flex -Pscotchyy -olex.yy.c
+LN           = ln
+MKDIR        = mkdir
+MV           = mv
+RANLIB       = ranlib
+YACC         = bison -pscotchyy -y -b y
+EOF
+    elif [ $(uname) == Linux ]; then
+      cat Make.inc/Makefile.inc.x86-64_pc_linux2 | \
+        sed -e "s&= -O3&= -fPIC -O3 -I$DEVENVPREFIX/include&" | \
+        sed -e "s&= -lz&= -L$DEVENVPREFIX/lib -lz&" >> \
+        Makefile.inc
+    fi
+    export LDFLAGS="-L$DEVENVPREFIX/lib $LDFLAGS"
+    buildcmd make.log make -j $NP
+  popd
+
+  # install.
+  mkdir -p $DEVENVPREFIX/lib
+  cp lib/* $DEVENVPREFIX/lib
+  mkdir -p $DEVENVPREFIX/bin
+  cp bin/* $DEVENVPREFIX/bin
+  mkdir -p $DEVENVPREFIX/include
+  cp include/* $DEVENVPREFIX/include
+popd
+# vim: set et nobomb ft=bash ff=unix fenc=utf8:
