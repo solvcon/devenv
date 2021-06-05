@@ -35,8 +35,8 @@ By invoking this one command should bring you the whole SOLVCON stack:
 ./bin/build-application-solvcon-devenv.sh
 ```
 
-You may use the management tool `devenv` to build the target package you need from source.
-By placing the command to see the details of usage:
+You may use the management tool `devenv` to build the target package you need
+from source.  By placing the command to see the details of usage:
 
 ```
 devenv
@@ -46,6 +46,7 @@ devenv
 ## Development
 
 ### Build Scripts
+
 We strongly suggest you to enable shared library build by default in your
 package build script, because it is expected to launch a lot of applications
 built by `devenv` for `devenv` users, and the launched toolchain may need
