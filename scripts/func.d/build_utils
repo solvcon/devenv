@@ -35,8 +35,8 @@ syncgit () {
   local pkgrepo=${giturl}/${pkgname}.git
 
   # unpack (clone)
-  mkdir -p ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src
-  pushd ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src > /dev/null
+  mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
+  pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src > /dev/null
 
   if [ ! -d ${pkgfull} ] ; then
     git clone -b ${pkgbranch} ${pkgrepo} ${pkgfull}

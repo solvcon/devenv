@@ -9,7 +9,7 @@ pkgfull=${pkgname}-${pkgbranch}
 # unpack (clone / pull)
 syncgit https://github.com/HDFGroup ${pkgname} ${pkgbranch}
 
-pushd ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
+pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
 
   mkdir -p build
   cd build

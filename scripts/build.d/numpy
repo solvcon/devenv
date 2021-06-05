@@ -9,7 +9,7 @@ pkgfull=${pkgname}-${pkgbranch}
 # unpack (clone / pull)
 syncgit https://github.com/numpy ${pkgname} ${pkgbranch}
 
-pushd ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
+pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
 
 # prepare files for building.
 if [ ! -e ${DEVENVPREFIX}/bin/python3 ]; then

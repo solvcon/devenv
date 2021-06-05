@@ -9,7 +9,7 @@ pkgfull=${pkgname}-${pkgbranch}
 
 syncgit https://github.com/cython ${pkgname} ${pkgbranch}
 
-pushd ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
+pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
 
   PYTHON=${DEVENVPREFIX}/bin/python3
 

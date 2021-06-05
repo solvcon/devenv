@@ -8,7 +8,7 @@ devenv() {
   if [[ "$1" == "use" ]]; then
     shift
 
-    if [ ! -d "${DEVENVROOT}/flavors/$1" ]; then
+    if [ ! -d "${DEVENVFLAVORROOT}/$1" ]; then
       display "not hacking"
       return
     fi

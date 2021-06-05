@@ -8,7 +8,7 @@ pkgfull=${pkgname}-${pkgbranch}
 
 syncgit https://github.com/madler ${pkgname} ${pkgbranch}
 
-pushd ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
+pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
 
   # build.
   buildcmd configure.log ./configure --prefix=${DEVENVPREFIX}
