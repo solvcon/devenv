@@ -1,6 +1,7 @@
 export DEVENVFLAVOR=""
 export DEVENVPREFIX=""
 export DEVENVPATH_BACKUP="${PATH}"
+export DEVENVDLROOT="${DEVENVROOT}/var/downloaded"
 case "$(uname)" in
   Darwin)
     export DEVENVLIBRARY_PATH_BACKUP="${DYLD_FALLBACK_LIBRARY_PATH}"
