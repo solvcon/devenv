@@ -1,0 +1,9 @@
+. ${DEVENVROOT}/scripts/func.d/bash_utils
+
+if [ -z "${DEVENVFLAVOR}" ]; then
+  display "no flavor in use"
+else
+  display "current flavor is ${DEVENVFLAVOR}"
+fi
+
+# vim: set et nu nobomb fenc=utf8 ft=bash ff=unix sw=2 ts=2:
