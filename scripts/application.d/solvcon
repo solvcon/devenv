@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+set -e
+
+application_name=solvcon
+application_branch=${VERSION:-master}
+application_full=$application_name-$application_branch
+application_src=${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src/${application_full}
+
+syncgit https://github.com/solvcon ${application_name} ${application_branch}
+
+export DEVENVAPPLICATION=${DEVENVROOT}/flavors/${DEVENVFLAVOR}/application-${application_name}
+mkdir -p ${DEVENVAPPLICATION}
+
+ln -s ${application_src} ${DEVENVAPPLICATION}/${application_name}
+
+
+echo "launching solvcon..."
+${DEVENVROOT}/bin/build-application-solvcon-devenv.sh
+
+# vim: set et nobomb ft=bash ff=unix fenc=utf8:

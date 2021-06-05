@@ -52,6 +52,11 @@ _devenv() {
       COMPREPLY=( $(compgen -W "$(get_list build)" -- ${cur}) )
       return 0
       ;;
+    launch)
+      [[ $COMP_CWORD > 2 ]] && return 1
+      COMPREPLY=( $(compgen -W "$(get_list application)" -- ${cur}) )
+      return 0
+      ;;
     *)
       [[ $COMP_CWORD > 1 ]] && return 1
       cmds=$(get_list cmd)
