@@ -4,6 +4,29 @@ buildcmd () {
   echo "done; log file: $(cd "$(dirname $1)" && pwd)/$1"
 }
 
+download_md5 () {
+  local loc=${DEVENVDLROOT}/$1
+  local url=$2
+  local md5hash=$3
+  if [ $(uname) == Darwin ] ; then
+    local md5="md5 -q"
+  elif [ $(uname) == Linux ] ; then
+    local md5=md5sum
+  fi
+  if [ ! -e $loc ] || [ $md5hash != `$md5 $loc | cut -d ' ' -f 1` ] ; then
+    mkdir -p $(dirname $loc)
+    rm -f $loc
+    echo "Download from $url"
+    curl -sSL -o $loc $url
+  fi
+  local md5hash_calc=`$md5 $loc | cut -d ' ' -f 1`
+  if [ $md5hash != $md5hash_calc ] ; then
+    echo "$(basename $loc) md5 hash $md5hash but got $md5hash_calc"
+  else
+    echo "$(basename $loc) md5 hash $md5hash confirmed"
+  fi
+}
+
 syncgit () {
   local giturl=$1
   local pkgname=$2
