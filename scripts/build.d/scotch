@@ -12,8 +12,8 @@ if [ -z "${SYNCGIT}" ]; then
   # download tarball
   download_md5 $pkgfn $pkgurl 5b851c3dc0a54185aecb44980ed3a334
 
-  mkdir -p ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src
-  cd ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src
+  mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
+  cd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
   tar xf ${DEVENVDLROOT}/$pkgfn
 else
   pkgname=scotch
@@ -24,8 +24,8 @@ else
   syncgit https://gitlab.inria.fr/scotch ${pkgname} ${pkgbranch}
 fi
 
-pushd ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
-  pushd ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src/${pkgfull}/src
+pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
+  pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull}/src
     # build.
     rm -f Makefile.inc
     echo "prefix = $DEVENVPREFIX" > Makefile.inc

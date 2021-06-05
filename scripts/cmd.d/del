@@ -3,7 +3,7 @@
 if [ -z $1 ]; then
   display -e "must need an argument!!"
 else
-  rm -rf ${DEVENVROOT}/flavors/$1
+  rm -rf ${DEVENVFLAVORROOT}/$1
   display "removing '$1' dev environment"
 fi
 

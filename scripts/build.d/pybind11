@@ -30,15 +30,15 @@ elif [[ $DEVENVFLAVOR == dbg* ]] ; then
   cmakecmd+=("-DCMAKE_BUILD_TYPE=Debug")
 fi
 
-mkdir -p ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src/${pkgfull}/build
+mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull}/build
 
-pushd ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src/${pkgfull}/build > /dev/null
+pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull}/build > /dev/null
 
   buildcmd cmake.log "${cmakecmd[@]}" ..
   buildcmd make.log make -j $NP
   buildcmd install.log make install
 
-  pushd ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
+  pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
     buildcmd build/setup.log $PYTHON setup.py install
   popd > /dev/null
 

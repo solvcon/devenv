@@ -12,7 +12,7 @@ syncgit https://github.com/Kitware ${pkgname} ${pkgbranch}
 cfgcmd=("./configure")
 cfgcmd+=("--prefix=${DEVENVPREFIX}")
 
-pushd ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
+pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
 
   buildcmd configure.log "${cfgcmd[@]}"
   buildcmd make.log make -j ${NP}

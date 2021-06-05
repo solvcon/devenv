@@ -8,7 +8,7 @@ pkgfull=${pkgname}-${pkgbranch}
 
 syncgit https://github.com/openssl ${pkgname} ${pkgbranch}
 
-pushd ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
+pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
 
   cfgcmd=("./config")
   cfgcmd+=("--prefix=${DEVENVPREFIX}")

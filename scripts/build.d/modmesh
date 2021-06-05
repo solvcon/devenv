@@ -15,7 +15,7 @@ PYTHON=${DEVENVPREFIX}/bin/python3
 
 syncgit https://github.com/solvcon ${pkgname} ${pkgbranch}
 
-pushd ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
+pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
 
   if [ -e build ]; then
     rm -rf build
@@ -23,7 +23,7 @@ pushd ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
 
   mkdir -p build
 
-  pushd ${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src/${pkgfull}/build > /dev/null
+  pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull}/build > /dev/null
 
     cmakecmd=("cmake")
     cmakecmd+=("-DCMAKE_INSTALL_PREFIX=${DEVENVPREFIX}")

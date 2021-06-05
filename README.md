@@ -26,6 +26,11 @@ By using the following command to setup all necessary environment variables:
 source scripts/init
 ```
 
+## Advanced Configuration
+
+* Customized flavors directory path: You may define the `DEVENVFLAVORROOT`
+environment variable to point to the flavors root path where you want.
+
 
 ## Usage
 

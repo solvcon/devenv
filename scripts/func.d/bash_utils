@@ -13,7 +13,7 @@ get_list() {
   local dir=""
   case $1 in
     flavor)
-      dir="${DEVENVROOT}/flavors"
+      dir="${DEVENVFLAVORROOT}"
       ;;
     build)
       dir="${DEVENVROOT}/scripts/build.d"
