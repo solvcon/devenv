@@ -9,10 +9,10 @@ application_src=${DEVENVROOT}/flavors/${DEVENVFLAVOR}/src/${application_full}
 
 syncgit https://github.com/solvcon ${application_name} ${application_branch}
 
-export DEVENVAPPLICATION=${DEVENVROOT}/flavors/${DEVENVFLAVOR}/application-${application_name}
-mkdir -p ${DEVENVAPPLICATION}
+export DEVENVAPP=${DEVENVROOT}/flavors/${DEVENVFLAVOR}/application-${application_name}
+mkdir -p ${DEVENVAPP}
 
-ln -s ${application_src} ${DEVENVAPPLICATION}/${application_name}
+ln -s ${application_src} ${DEVENVAPP}/${application_name}
 
 
 echo "launching solvcon..."

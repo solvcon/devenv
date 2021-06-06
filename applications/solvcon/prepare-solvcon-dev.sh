@@ -11,7 +11,7 @@ if [ -z "${DEVENVFLAVOR}" ]
 then
   SOLVCON_PROJECT=${1:-${HOME}/solvcon}
 else
-  SOLVCON_PROJECT=${1:-${DEVENVAPPLICATION}}
+  SOLVCON_PROJECT=${1:-${DEVENVAPP}}
 fi
 
 SCSRC="${SOLVCON_PROJECT}/solvcon"

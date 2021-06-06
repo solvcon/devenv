@@ -18,7 +18,7 @@ get_list() {
     build)
       dir="${DEVENVROOT}/scripts/build.d"
       ;;
-    applicatioin)
+    application)
       dir="${DEVENVROOT}/scripts/application.d"
       ;;
     cmd)
