@@ -6,7 +6,14 @@
 #   source <this script> <your-project-folder>
 #
 set -x
-SOLVCON_PROJECT=${1:-${HOME}/solvcon}
+
+if [ -z "${DEVENVFLAVOR}" ]
+then
+  SOLVCON_PROJECT=${1:-${HOME}/solvcon}
+else
+  SOLVCON_PROJECT=${1:-${DEVENVAPP}}
+fi
+
 SCSRC="${SOLVCON_PROJECT}/solvcon"
 SCSRC_WORKING="${SOLVCON_PROJECT}/solvcon-working"
 SCDE_SRC=${SCDE_SRC:-${SOLVCON_PROJECT}/devenv}
@@ -77,4 +84,12 @@ echo "======================================="
 pushd ${SCSRC}/sandbox/gas/tube
 ./go run
 popd
+
+
+# A workaround to use packages built or managed by conda.  We could abandon
+# this workaround when devenv is fully integrated and used for SOLVCON
+echo "Re-launch SOLVCON by the following commands:"
+echo ""
+echo "export PATH="${SCSRC}:${MINICONDA_DIR}/bin:${PATH}""
+echo ""
 

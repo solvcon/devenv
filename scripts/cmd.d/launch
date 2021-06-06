@@ -1,0 +1,17 @@
+. ${DEVENVROOT}/scripts/func.d/bash_utils
+
+script="${DEVENVROOT}/scripts/application.d/$1"
+if [ ! -f "${script}" ]; then
+  display -e "'$1' not defined"
+fi
+
+if [ -z "${DEVENVFLAVOR}" ] ; then
+  display -e "\$DEVENVFLAVOR not defined"
+fi
+
+. ${DEVENVROOT}/scripts/func.d/build_utils
+display "Execute building script \"${script}\" ${@:$(($#+1))} ..."
+. ${script}
+display "Finished building script \"${script}\"."
+
+# vim: set et nu nobomb fenc=utf8 ft=sh ff=unix sw=2 ts=2:
