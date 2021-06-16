@@ -58,5 +58,19 @@ built by `devenv` for `devenv` users, and the launched toolchain may need
 significant memory. Enabling shared library to build your package will provide
 more flexibility and saves significant memory.
 
+### Running Unitest
+
+We use `shunit2` as our unittest framework. If you want to enable unittest, please fetch your source along with `shunit2` by placing:
+
+```
+git clone <repo url> --recurse-submodules
+```
+
+Run the unittest jobs by:
+
+```
+cd tests
+./runner.sh
+```
 
 <!-- vim: set ff=unix ft=markdown fenc=utf8 sw=2 tw=79: -->
