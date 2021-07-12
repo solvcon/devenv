@@ -4,6 +4,7 @@ export DEVENVROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 devenv() {
   . ${DEVENVROOT}/scripts/func.d/bash_utils
+  . ${DEVENVROOT}/scripts/env.d/devenv_impl
 
   if [[ "$1" == "use" ]]; then
     shift
@@ -14,10 +15,10 @@ devenv() {
     fi
 
     if [ ! -z "${DEVENVFLAVOR}" ] ; then
-      . ${DEVENVROOT}/scripts/env.d/devenv_impl nameremove ${DEVENVFLAVOR}
+      devenv_act nameremove ${DEVENVFLAVOR}
     fi
 
-    . ${DEVENVROOT}/scripts/env.d/devenv_impl namemunge $1
+    devenv_act namemunge $1
     echo "now using '${DEVENVFLAVOR}'"
   elif [[ "$1" == "off" ]]; then
     if [ -z "${DEVENVFLAVOR}" ] ; then
@@ -26,7 +27,7 @@ devenv() {
     fi
 
     display "'${DEVENVFLAVOR}' to be turned off"
-    . ${DEVENVROOT}/scripts/env.d/devenv_impl nameremove ${DEVENVFLAVOR}
+    devenv_act nameremove ${DEVENVFLAVOR}
   else
     ${DEVENVROOT}/bin/devenv "$@"
   fi

@@ -17,24 +17,26 @@ nameremove() {
   eval "export $1=$(echo -n ${!1} | awk -v RS=: -v ORS=: -v var="$2" '$0 != var' | sed 's/:*$//')"
 }
 
-case "$(uname)" in
-  Darwin)
-    lib_path=DYLD_FALLBACK_LIBRARY_PATH
-    ;;
-  Linux)
-    lib_path=LD_LIBRARY_PATH
-    ;;
-esac
+devenv_act() {
+  case "$(uname)" in
+    Darwin)
+      lib_path=DYLD_FALLBACK_LIBRARY_PATH
+      ;;
+    Linux)
+      lib_path=LD_LIBRARY_PATH
+      ;;
+  esac
 
-eval "$1 PATH ${DEVENVFLAVORROOT}/$2/usr/bin"
-eval "$1 ${lib_path} ${DEVENVFLAVORROOT}/$2/usr/lib"
+  eval "$1 PATH ${DEVENVFLAVORROOT}/$2/usr/bin"
+  eval "$1 ${lib_path} ${DEVENVFLAVORROOT}/$2/usr/lib"
 
-if [[ "$1" == namemunge ]]; then
-  export DEVENVFLAVOR=$2
-  export DEVENVPREFIX=${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/usr
-elif [[ "$1" == "nameremove" ]]; then
-  unset DEVENVFLAVOR
-  unset DEVENVPREFIX
-fi
+  if [[ "$1" == namemunge ]]; then
+    export DEVENVFLAVOR=$2
+    export DEVENVPREFIX=${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/usr
+  elif [[ "$1" == "nameremove" ]]; then
+    unset DEVENVFLAVOR
+    unset DEVENVPREFIX
+  fi
+}
 
 # vim: set et nu nobomb fenc=utf8 ft=bash ff=unix sw=2 ts=2:
