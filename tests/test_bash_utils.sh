@@ -44,7 +44,7 @@ test_get_flavor_list() {
   tmp_flavor="${DEVENVFLAVORROOT}/${flavor_name}"
 
   # SETUP
-  mkdir ${tmp_flavor}
+  mkdir -p ${tmp_flavor}
 
   actual=$(get_list flavor)
   assertEquals "${flavor_name}" "${actual}"
