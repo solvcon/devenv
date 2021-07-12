@@ -17,7 +17,6 @@ following features:
 The environment consists of scripts for building dependencies and managing
 them.  More information will be added as the project becomes more complete.
 
-
 ## Pre-requisite
 
 By using the following command to setup all necessary environment variables:
@@ -30,7 +29,6 @@ source scripts/init
 
 * Customized flavors directory path: You may define the `DEVENVFLAVORROOT`
 environment variable to point to the flavors root path where you want.
-
 
 ## Usage
 
@@ -47,7 +45,6 @@ from source.  By placing the command to see the details of usage:
 devenv
 ```
 
-
 ## Development
 
 ### Build Scripts
@@ -60,7 +57,8 @@ more flexibility and saves significant memory.
 
 ### Running Unitest
 
-We use `shunit2` as our unittest framework. If you want to enable unittest, please fetch your source along with `shunit2` by placing:
+We use `shunit2` as our unittest framework. If you want to enable unittest,
+please fetch your source along with `shunit2` by placing:
 
 ```
 git clone <repo url> --recurse-submodules
