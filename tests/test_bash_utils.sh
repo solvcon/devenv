@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 . ${DEVENVROOT}/scripts/func.d/bash_utils
 
 test_display_type() {
