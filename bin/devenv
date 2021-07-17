@@ -22,6 +22,7 @@ devenv management tool
 
 Commands:
 add    - create a new devenv environment
+list   - list all available devenv environments
 use    - select an environment to use
 del    - delete an environment directory
 off    - deactivate environment
