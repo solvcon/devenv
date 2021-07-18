@@ -18,16 +18,21 @@ elif [[ -z ${cmd} || ${cmd} = help ]]; then
   display "Usage: ${0##*/} [command]
 
 Description:
-devenv management tool
+    Tool to manage development environment in console
+
+Variables:
+    DEVENVROOT=${DEVENVROOT}
+    DEVENVDLROOT=${DEVENVDLROOT}
+    DEVENVFLAVOR=${DEVENVFLAVOR}
 
 Commands:
-add    - create a new devenv environment
-list   - list all available devenv environments
-use    - select an environment to use
-del    - delete an environment directory
-off    - deactivate environment
-build  - build package
-launch - launch application"
+    list   - list all available environments
+    use    - activate an environment
+    off    - deactivate the environment
+    add    - create a new environment directory
+    del    - delete a existing environment directory
+    build  - build a package in the active environment
+    launch - launch an application"
 else
   display -e "Unrecognized command line argument: '${cmd}'"
 fi
