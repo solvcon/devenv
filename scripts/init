@@ -6,7 +6,13 @@ devenv() {
   . ${DEVENVROOT}/scripts/func.d/bash_utils
   . ${DEVENVROOT}/scripts/env.d/devenv_impl
 
-  if [[ "$1" == "use" ]]; then
+  if [[ "$1" == "" ]]; then
+    if [ -z "${DEVENVFLAVOR}" ] ; then
+      display "no active flavor: \$DEVENVFLAVOR not defined"
+    else
+      display "'${DEVENVFLAVOR}' is active: ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}"
+    fi
+  elif [[ "$1" == "use" ]]; then
     shift
 
     if [ ! -d "${DEVENVFLAVORROOT}/$1" ]; then
@@ -28,6 +34,8 @@ devenv() {
 
     display "'${DEVENVFLAVOR}' to be turned off"
     devenv_act nameremove ${DEVENVFLAVOR}
+  elif [[ "$1" == "help" ]]; then
+    ${DEVENVROOT}/bin/devenv "$@"
   else
     ${DEVENVROOT}/bin/devenv "$@"
   fi
