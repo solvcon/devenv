@@ -4,10 +4,10 @@ set -e
 
 pkgname=numpy
 pkgbranch=${VERSION:-main}
-pkgfull=${pkgname}-${pkgbranch}
+pkgfull=${pkgname}
 
 # unpack (clone / pull)
-syncgit https://github.com/numpy ${pkgname} ${pkgbranch}
+syncgit https://github.com/numpy ${pkgname} ${pkgbranch} ${pkgfull}
 
 pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
 
@@ -26,16 +26,16 @@ if [ $(uname) == Darwin ] ; then
   cat >> site.cfg << EOF
 [openblas]
 libraries = openblas
-library_dirs = ${DEVENVPREFIX}/lib
-include_dirs = ${DEVENVPREFIX}/include/openblas
+library_dirs = ${DEVENVPREFIX}/lib:/usr/local/opt/openblas/lib:/usr/local/lib:/usr/lib
+include_dirs = ${DEVENVPREFIX}/include/openblas:/usr/local/opt/openblas/include:/usr/local/include/openblas:/usr/include/openblas
 runtime_library_dirs = ${DEVENVPREFIX}/lib
 EOF
 elif [ $(uname) == Linux ] ; then
   cat >> site.cfg << EOF
 [openblas]
 libraries = openblas
-library_dirs = ${DEVENVPREFIX}/lib
-include_dirs = ${DEVENVPREFIX}/include/openblas
+library_dirs = ${DEVENVPREFIX}/lib:/usr/local/lib:/usr/lib
+include_dirs = ${DEVENVPREFIX}/include/openblas:/usr/local/include/openblas:/usr/include/openblas
 runtime_library_dirs = ${DEVENVPREFIX}/lib
 EOF
 fi

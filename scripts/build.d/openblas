@@ -2,12 +2,31 @@
 
 set -e
 
-pkgname=OpenBLAS
-pkgbranch=${VERSION:-develop}
-pkgfull=${pkgname}-${pkgbranch}
+if [ -z "${SYNCGIT}" ]; then
 
-# unpack (clone / pull)
-syncgit https://github.com/xianyi ${pkgname} ${pkgbranch}
+  pkgname=OpenBLAS
+  pkgver=${VERSION:-0.3.17}
+  pkgfull=$pkgname-$pkgver
+  pkgfn=$pkgfull.tar.gz
+  pkgurl=https://github.com/xianyi/OpenBLAS/releases/download/v${pkgver}/${pkgfn}
+
+  download_md5 $pkgfn $pkgurl 5429954163bcbaccaa13e11fe30ca5b6
+
+  mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
+  pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
+    tar xf ${DEVENVDLROOT}/$pkgfn
+  popd
+
+else
+
+  pkgname=OpenBLAS
+  pkgbranch=${VERSION:-develop}
+  pkgfull=${pkgname}
+
+  # unpack (clone / pull)
+  syncgit https://github.com/xianyi ${pkgname} ${pkgbranch} ${pkgfull}
+
+fi
 
 pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
 
