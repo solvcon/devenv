@@ -20,6 +20,11 @@ elif [[ -z ${cmd} || ${cmd} = help ]]; then
 Description:
     Tool to manage development environment in console
 
+Variables:
+    DEVENVROOT=${DEVENVROOT}
+    DEVENVDLROOT=${DEVENVDLROOT}
+    DEVENVFLAVOR=${DEVENVFLAVOR}
+
 Commands:
     list   - list all available environments
     use    - activate an environment

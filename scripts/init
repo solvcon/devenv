@@ -12,6 +12,8 @@ devenv() {
     else
       display "'${DEVENVFLAVOR}' is active: ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}"
     fi
+    display ""
+    ${DEVENVROOT}/bin/devenv help
   elif [[ "$1" == "use" ]]; then
     shift
 
