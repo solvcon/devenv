@@ -21,9 +21,9 @@ else
 
   pkgname=openssl
   pkgbranch=${VERSION:-master}
-  pkgfull=${pkgname}-${pkgbranch}
+  pkgfull=${pkgname}
 
-  syncgit https://github.com/openssl ${pkgname} ${pkgbranch}
+  syncgit https://github.com/openssl ${pkgname} ${pkgbranch} ${pkgfull}
 
 fi
 
