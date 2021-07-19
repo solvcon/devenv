@@ -4,9 +4,9 @@ set -e
 
 pkgname=cpython
 pkgbranch=${VERSION:-main}
-pkgfull=${pkgname}-${pkgbranch}
+pkgfull=${pkgname}
 
-syncgit https://github.com/python ${pkgname} ${pkgbranch}
+syncgit https://github.com/python ${pkgname} ${pkgbranch} ${pkgfull}
 
 pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
 

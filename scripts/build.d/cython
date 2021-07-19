@@ -1,13 +1,31 @@
 #!/usr/bin/env bash
 
 set -e
-source ${DEVENVROOT}/scripts/func.d/build_utils
 
-pkgname=cython
-pkgbranch=${VERSION:-master}
-pkgfull=${pkgname}-${pkgbranch}
+if [ -z "${SYNCGIT}" ]; then
 
-syncgit https://github.com/cython ${pkgname} ${pkgbranch}
+  pkgname=Cython
+  pkgver=${VERSION:-0.29.24}
+  pkgfull=$pkgname-$pkgver
+  pkgfn=$pkgfull.tar.gz
+  pkgurl=https://files.pythonhosted.org/packages/59/e3/78c921adf4423fff68da327cc91b73a16c63f29752efe7beb6b88b6dd79d/$pkgfn
+
+  download_md5 $pkgfn $pkgurl 81aff945f5bfdfb86e7a5d24f5467668
+
+  mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
+  pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
+    tar xf ${DEVENVDLROOT}/$pkgfn
+  popd
+
+else
+
+  pkgname=cython
+  pkgbranch=${VERSION:-master}
+  pkgfull=${pkgname}
+
+  syncgit https://github.com/cython ${pkgname} ${pkgbranch} ${pkgfull}
+
+fi
 
 pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
 

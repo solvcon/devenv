@@ -2,11 +2,30 @@
 
 set -e
 
-pkgname=openssl
-pkgbranch=${VERSION:-master}
-pkgfull=${pkgname}-${pkgbranch}
+if [ -z "${SYNCGIT}" ]; then
 
-syncgit https://github.com/openssl ${pkgname} ${pkgbranch}
+  pkgname=openssl
+  pkgver=${VERSION:-1.1.1b}
+  pkgfull=$pkgname-$pkgver
+  pkgfn=$pkgfull.tar.gz
+  pkgurl=https://www.openssl.org/source/$pkgfn
+
+  download_md5 $pkgfn $pkgurl 4532712e7bcc9414f5bce995e4e13930
+
+  mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
+  pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
+    tar xf ${DEVENVDLROOT}/$pkgfn
+  popd
+
+else
+
+  pkgname=openssl
+  pkgbranch=${VERSION:-master}
+  pkgfull=${pkgname}
+
+  syncgit https://github.com/openssl ${pkgname} ${pkgbranch} ${pkgfull}
+
+fi
 
 pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
 
