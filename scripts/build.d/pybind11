@@ -2,12 +2,32 @@
 
 set -e
 
-pkgname=pybind11
-pkgbranch=${VERSION:-master}
-pkgfull=$pkgname-$pkgbranch
+# NOTE: Default is to use git!
+if [ -n "${SYNCGIT}" ]; then
 
-# unpack (clone)
-syncgit https://github.com/pybind ${pkgname} ${pkgbranch}
+  pkgname=pybind11
+  pkgver=${VERSION:-2.7.0}
+  pkgfull=$pkgname-$pkgver
+  pkgfn=$pkgfull.tar.gz
+  pkgurl=https://github.com/pybind/pybind11/archive/refs/tags/v${pkgver}.tar.gz
+
+  download_md5 $pkgfn $pkgurl bd742c80621babef4814cc2df041490d
+
+  mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
+  pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src > /dev/null
+    tar xf ${DEVENVDLROOT}/$pkgfn
+  popd > /dev/null
+
+else
+
+  pkgname=pybind11
+  pkgbranch=${VERSION:-master}
+  pkgfull=$pkgname
+
+  # unpack (clone)
+  syncgit https://github.com/pybind ${pkgname} ${pkgbranch} ${pkgfull}
+
+fi
 
 # build.
 
