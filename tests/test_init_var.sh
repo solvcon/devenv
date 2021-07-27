@@ -18,10 +18,11 @@ test_devenvlibrary_path_backup() {
 }
 
 test_devenvpath_backup() {
-  # by running shunit2, the runtime PATH will be added /tmp/shunit.* at the
-  # head of PATH string remove the shunit snippet to match the original PATH
-  # backup
-  assertEquals "${DEVENVPATH_BACKUP}" ${PATH#/tmp/shunit.*:}
+  # shunit2 prepends the runtime PATH.  Remove it before testing.
+  testpath=${PATH}
+  testpath=${testpath#/tmp/shunit.*:}  # Remove shunit tmp in Linux
+  testpath=${testpath#/var/folders/*shunit.*:}  # Remove shunit tmp in macos
+  assertEquals "${DEVENVPATH_BACKUP}" "${testpath}"
 }
 
 test_devenvprefix() {
