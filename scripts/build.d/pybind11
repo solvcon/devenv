@@ -2,19 +2,45 @@
 
 set -e
 
-pkgname=pybind11
-pkgbranch=${VERSION:-master}
-pkgfull=$pkgname-$pkgbranch
+SRCSYNC=${SRCSYNC:-git}
 
-# unpack (clone)
-syncgit https://github.com/pybind ${pkgname} ${pkgbranch}
+if [ "${SRCSYNC}" == "tarball" ] ; then
+
+  pkgname=pybind11
+  pkgver=${VERSION:-2.7.0}
+  pkgfull=$pkgname-$pkgver
+  pkgfn=$pkgfull.tar.gz
+  pkgurl=https://github.com/pybind/pybind11/archive/refs/tags/v${pkgver}.tar.gz
+
+  download_md5 $pkgfn $pkgurl bd742c80621babef4814cc2df041490d
+
+  mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
+  pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src > /dev/null
+    tar xf ${DEVENVDLROOT}/$pkgfn
+  popd > /dev/null
+
+elif [ "${SRCSYNC}" == "git" ] ; then
+
+  pkgname=pybind11
+  pkgbranch=${VERSION:-master}
+  pkgfull=$pkgname
+
+  # unpack (clone)
+  syncgit https://github.com/pybind ${pkgname} ${pkgbranch} ${pkgfull}
+
+else
+
+  display -e "Invalid \${SRCSYNC} ${SRCSYNC}"
+  exit
+
+fi
 
 # build.
 
 # prepare files for building.
 if [ ! -e ${DEVENVPREFIX}/bin/python3 ]; then
-    display -e "Python3 not exist!!"
-    exit
+  display -e "Python3 not exist!!"
+  exit
 fi
 
 PYTHON=${DEVENVPREFIX}/bin/python3
@@ -22,13 +48,16 @@ PYTHON=${DEVENVPREFIX}/bin/python3
 cmakecmd=("cmake")
 cmakecmd+=("-DPYTHON_EXECUTABLE:FILEPATH=${PYTHON}")
 cmakecmd+=("-DCMAKE_INSTALL_PREFIX=${DEVENVPREFIX}")
-cmakecmd+=("-DPYBIND11_TEST=OFF")
+PYBIND11_TEST=${PYBIND11_TEST:-OFF}
+cmakecmd+=("-DPYBIND11_TEST=${PYBIND11_TEST}")
 
-if [[ $DEVENVFLAVOR == opt* ]] ; then
-  cmakecmd+=("-DCMAKE_BUILD_TYPE=Release")
-elif [[ $DEVENVFLAVOR == dbg* ]] ; then
-  cmakecmd+=("-DCMAKE_BUILD_TYPE=Debug")
+if [ -z "${CMAKE_BUILD_TYPE}" ] ; then
+  CMAKE_BUILD_TYPE=Release
+  if [[ $DEVENVFLAVOR == dbg* ]] ; then
+    CMAKE_BUILD_TYPE=Debug
+  fi
 fi
+cmakecmd+=("-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}")
 
 mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull}/build
 
