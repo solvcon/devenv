@@ -49,7 +49,18 @@ pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
   buildcmd make.log make build_all -j ${NP}
   buildcmd install.log make install
 
-  curl https://bootstrap.pypa.io/get-pip.py | ${PREFIX}/bin/python3
+  # check python version
+  PY_BIN=${PREFIX}/bin/python3
+  CURL_URL=https://bootstrap.pypa.io/get-pip.py
+
+  IFS='.' read -ra VER <<< ${VERSION}
+
+  if [[ ${VER[0]} == "v2" ]]; then
+    PY_BIN=${PREFIX}/bin/python
+    CURL_URL=https://bootstrap.pypa.io/pip/2.7/get-pip.py
+  fi
+
+  curl ${CURL_URL} | ${PY_BIN}
   rm -f ${PREFIX}/bin/pip
 
 popd > /dev/null
