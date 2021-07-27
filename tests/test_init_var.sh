@@ -1,6 +1,5 @@
 #!/bin/bash
-expected_devenvroot_relative=$(pwd)/../
-expected_devenvroot=$(realpath ${expected_devenvroot_relative})
+expected_devenvroot="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 test_devenvroot() {
   assertEquals ${DEVENVROOT} ${expected_devenvroot}
