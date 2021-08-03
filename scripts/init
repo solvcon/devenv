@@ -79,4 +79,9 @@ _devenv() {
 }
 complete -F _devenv devenv
 
+if [ -n "${DEVENVALIAS}" ] ; then
+  alias ${DEVENVALIAS}=devenv
+  complete -F _devenv ${DEVENVALIAS}
+fi
+
 # vim: set et nu nobomb fenc=utf8 ft=bash ff=unix sw=2 ts=2:
