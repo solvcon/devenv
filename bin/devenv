@@ -32,7 +32,9 @@ Commands:
     add    - create a new environment directory
     del    - delete a existing environment directory
     build  - build a package in the active environment
-    launch - launch an application"
+    launch - launch an application
+    show   - print the current environment"
+
 else
   display -e "Unrecognized command line argument: '${cmd}'"
 fi
