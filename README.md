@@ -67,6 +67,7 @@ Commands:
     del    - delete a existing environment directory
     build  - build a package in the active environment
     launch - launch an application
+    show   - print the current environment
 ```
 
 There is no environment ("flavor") available in the beginning.  You need to
