@@ -58,6 +58,8 @@ Variables:
     DEVENVROOT=/path/to
     DEVENVDLROOT=/path/to/var/downloaded
     DEVENVFLAVOR=
+    DEVENVFLAVORROOT=/path/to/flavors
+    DEVENVCURRENTROOT=/dev/null
 
 Commands:
     list   - list all available environments
