@@ -18,7 +18,7 @@ devenv() {
     shift
 
     if [ ! -d "${DEVENVFLAVORROOT}/$1" ]; then
-      display "not hacking"
+      display "flavor $1 is not available"
       return
     fi
 
@@ -27,6 +27,7 @@ devenv() {
     fi
 
     devenv_act namemunge $1
+    export DEVENVCURRENTROOT=${DEVENVFLAVORROOT}/${DEVENVFLAVOR}
     echo "now using '${DEVENVFLAVOR}'"
   elif [[ "$1" == "off" ]]; then
     if [ -z "${DEVENVFLAVOR}" ] ; then
