@@ -59,11 +59,13 @@ fcompiler = gfortran
 EOF
 
 # buildcmd build.log $PYTHON setup.py build -j $NP
-buildcmd build.log ${PYTHON} setup.py build -j ${NP} install --prefix=${DEVENVPREFIX}
+buildcmd build.log ${PYTHON} setup.py build -j ${NP} install \
+  --prefix=${DEVENVPREFIX} --old-and-unmanageable
 
 popd > /dev/null
 
 # Check lapack version.
+echo "Check lapack version ..."
 ${PYTHON} -c "import numpy as np ; np.show_config()"
 
 # vim: set et nobomb ft=bash ff=unix fenc=utf8:
