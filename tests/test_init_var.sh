@@ -1,20 +1,30 @@
 #!/bin/bash
+
+echo "*** test file: $(basename ${BASH_SOURCE[0]})"
+
 expected_devenvroot="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 test_devenvroot() {
-  assertEquals ${DEVENVROOT} ${expected_devenvroot}
+  assertEquals "${expected_devenvroot}" "${DEVENVROOT}"
 }
 
 test_devenvflavor() {
-  assertEquals "${DEVENVFLAVOR}" ""
+  # Check for existence.
+  assertEquals foo ${DEVENVFLAVOR+foo}
 }
 
 test_devenvflavorroot() {
-  assertEquals ${DEVENVFLAVORROOT} ${expected_devenvroot}/flavors
+  assertEquals "${expected_devenvroot}/flavors" "${DEVENVFLAVORROOT}"
+}
+
+test_devenvcurrentroot() {
+  # Check for existence.
+  assertEquals foo "${DEVENVCURRENTROOT+foo}"
 }
 
 test_devenvlibrary_path_backup() {
-  assertEquals "${DEVENVLIBRARY_PATH_BACKUP}" ""
+  # Check for existence.
+  assertEquals foo ${DEVENVLIBRARY_PATH_BACKUP+foo}
 }
 
 test_devenvpath_backup() {
@@ -26,11 +36,11 @@ test_devenvpath_backup() {
 }
 
 test_devenvprefix() {
-  assertEquals "${DEVENVPREFIX}" ""
+  assertEquals /dev/null ${DEVENVPREFIX}
 }
 
 test_devenvdlroot() {
-  assertEquals ${DEVENVDLROOT} ${expected_devenvroot}/var/downloaded
+  assertEquals ${expected_devenvroot}/var/downloaded ${DEVENVDLROOT}
 }
 
 # Load and run shUnit2.

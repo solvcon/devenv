@@ -35,8 +35,9 @@ devenv() {
       return
     fi
 
-    display "'${DEVENVFLAVOR}' to be turned off"
+    display "the flavor '${DEVENVFLAVOR}' to be turned off"
     devenv_act nameremove ${DEVENVFLAVOR}
+    export DEVENVCURRENTROOT="/dev/null"
   elif [[ "$1" == "help" ]]; then
     ${DEVENVROOT}/bin/devenv "$@"
   else
