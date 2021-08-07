@@ -54,6 +54,7 @@ test_get_flavor_list() {
   assertNotContains "${actual}" "${flavor_name}"
 
   # SETUP
+  mkdir -p "${DEVENVFLAVORROOT}"
   # Note: do NOT add -p.  Make it fail if the directory already exists.
   mkdir "${tmp_flavor}"
 
