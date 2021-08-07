@@ -51,14 +51,14 @@ test_get_flavor_list() {
     exit
   fi
 
-  assertNotContains "${flavor_name}" "${actual}"
+  assertNotContains "${actual}" "${flavor_name}"
 
   # SETUP
   # Note: do NOT add -p.  Make it fail if the directory already exists.
   mkdir "${tmp_flavor}"
 
   actual=$(get_list flavor)
-  assertContains "${flavor_name}" "${actual}"
+  assertContains "${actual}" "${flavor_name}"
 
   # TEARDOWN
   rmdir "${tmp_flavor}"
