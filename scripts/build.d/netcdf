@@ -2,18 +2,35 @@
 
 set -e
 
-pkgname=netcdf-c
-pkgbranch=${VERSION:-v4.4.1.1}
-pkgfull=${pkgname}-${pkgbranch}
+if [ -z "${SYNCGIT}" ]; then
+  pkgname=netcdf
+  pkgver=${VERSION:-4.4.1.1}
+  pkgfull=$pkgname-$pkgver
 
-# unpack (clone / pull)
-syncgit https://github.com/Unidata ${pkgname} ${pkgbranch}
+  pkgfn=$pkgfull.tar.gz
+  pkgurl=ftp://ftp.unidata.ucar.edu/pub/$pkgname/$pkgfn
 
-pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
+  # download tarball
+  download_md5 $pkgfn $pkgurl 5b851c3dc0a54185aecb44980ed3a334
 
-  mkdir -p build
-  cd build
+  # unpack.
+  mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
+  pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src > /dev/null
 
+    tar xf ${DEVENVDLROOT}/$pkgfn
+
+  popd
+else
+  pkgname=netcdf-c
+  pkgbranch=${VERSION:-v4.4.1.1}
+  pkgfull=${pkgname}-${pkgbranch}
+
+  # unpack (clone / pull)
+  syncgit https://github.com/Unidata ${pkgname} ${pkgbranch}
+fi
+
+mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull}/build
+pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull}/build > /dev/null
   cmakecmd=("cmake")
   cmakecmd+=("-DCMAKE_INSTALL_PREFIX=${DEVENVPREFIX}")
   cmakecmd+=("-DBUILD_SHARED_LIBS=ON")
@@ -24,7 +41,6 @@ pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
 
   buildcmd cmake.log "${cmakecmd[@]}"
   buildcmd make.log make install -j $NP
-
 popd
 
 # vim: set et nobomb ft=bash ff=unix fenc=utf8:
