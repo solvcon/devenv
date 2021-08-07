@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+set -e
+
+pkgname=make
+pkgver=${VERSION:-4.3}
+pkgfull=$pkgname-$pkgver
+pkgfn=$pkgfull.tar.gz
+pkgurl=http://ftp.gnu.org/gnu/${pkgname}/${pkgfn}
+
+download_md5 $pkgfn $pkgurl fc7a67ea86ace13195b0bce683fd4469
+
+mkdir -p ${DEVENVCURRENTROOT}/src
+pushd ${DEVENVCURRENTROOT}/src > /dev/null
+  tar xf ${DEVENVDLROOT}/$pkgfn
+popd > /dev/null
+
+cfgcmd=("./configure")
+cfgcmd+=("--prefix=${DEVENVPREFIX}")
+
+pushd ${DEVENVCURRENTROOT}/src/${pkgfull} > /dev/null
+
+  buildcmd configure.log "${cfgcmd[@]}"
+  buildcmd make.log make -j ${NP}
+  buildcmd install.log make install
+
+popd > /dev/null
+
+# vim: set et nobomb ft=bash ff=unix fenc=utf8:
