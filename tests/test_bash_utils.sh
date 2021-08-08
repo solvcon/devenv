@@ -1,4 +1,7 @@
-#!/usr/bin/env bash
+#!/bin/bash
+
+echo "*** test file: $(basename ${BASH_SOURCE[0]})"
+
 . ${DEVENVROOT}/scripts/func.d/bash_utils
 
 test_display_type() {
@@ -43,14 +46,23 @@ test_get_flavor_list() {
   flavor_name="shunit2"
   tmp_flavor="${DEVENVFLAVORROOT}/${flavor_name}"
 
+  if [ -d ${tmp_flavor} ] ; then
+    echo "${tmp_flavor} already exists; cannot test"
+    exit
+  fi
+
+  assertNotContains "${actual}" "${flavor_name}"
+
   # SETUP
-  mkdir -p ${tmp_flavor}
+  mkdir -p "${DEVENVFLAVORROOT}"
+  # Note: do NOT add -p.  Make it fail if the directory already exists.
+  mkdir "${tmp_flavor}"
 
   actual=$(get_list flavor)
-  assertEquals "${flavor_name}" "${actual}"
+  assertContains "${actual}" "${flavor_name}"
 
   # TEARDOWN
-  rmdir ${tmp_flavor}
+  rmdir "${tmp_flavor}"
 }
 
 # Load and run shUnit2.

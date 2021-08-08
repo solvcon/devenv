@@ -1,3 +1,4 @@
-flavors
+flavors/
+tmp/
 var/downloaded
 *.swp

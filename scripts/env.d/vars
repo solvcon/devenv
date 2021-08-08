@@ -1,5 +1,5 @@
 export DEVENVFLAVOR=""
-export DEVENVPREFIX=""
+export DEVENVPREFIX="/dev/null"
 export DEVENVPATH_BACKUP="${PATH}"
 export DEVENVDLROOT="${DEVENVROOT}/var/downloaded"
 export DEVENVFLAVORROOT="${DEVENVFLAVORROOT:-$DEVENVROOT/flavors}"
