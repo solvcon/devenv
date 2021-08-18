@@ -6,6 +6,15 @@ pkgname=cpython
 pkgbranch=${VERSION:-main}
 pkgfull=${pkgname}
 
+trap 'get_pip $? $LINENO' ERR
+
+get_pip() {
+  echo "When failing to download pip, if you got warning messages like:"
+  echo "    pip is configured with locations that require TLS/SSL, however the ssl module in Python is not available."
+  echo "You may need OpenSSL lib in your flavor. Build OpenSSL with devenv by:"
+  echo "    $ devenv build openssl"
+}
+
 syncgit https://github.com/python ${pkgname} ${pkgbranch} ${pkgfull}
 
 pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
