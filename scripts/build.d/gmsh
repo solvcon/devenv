@@ -2,11 +2,29 @@
 
 set -e
 
-pkgname=gmsh
-pkgbranch=${VERSION:-master}
-pkgfull=$pkgname-$pkgbranch
+if [ -z "${SYNCGIT}" ]; then
 
-syncgit https://gitlab.onelab.info/gmsh/ ${pkgname} ${pkgbranch}
+  pkgname=gmsh
+  pkgver=${VERSION:-4.8.4}
+  pkgfull=${pkgname}-${pkgver}-source
+  pkgfn=$pkgfull.tar.gz
+  pkgurl=http://gmsh.info/src/$pkgfull.tgz
+  download_md5 $pkgfn $pkgurl 1e7212dfb1319d745ffb477a7a3ff124
+
+  mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
+  pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
+    tar xf ${DEVENVDLROOT}/$pkgfn
+  popd
+
+else
+
+  pkgname=gmsh
+  pkgbranch=${VERSION:-master}
+  pkgfull=$pkgname-$pkgbranch
+
+  syncgit https://gitlab.onelab.info/gmsh/ ${pkgname} ${pkgbranch} ${pkgfull}
+
+fi
 
 pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
 
@@ -15,8 +33,14 @@ pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
   cd build
 
   cmakecmd=("cmake")
+  cmakdcmd+=("-DCMAKE_PREFIX_PATH=${DEVENVPREFIX}")
   cmakecmd+=("-DCMAKE_INSTALL_PREFIX=${DEVENVPREFIX}")
   cmakecmd+=("-DBUILD_SHARED_LIBS=ON")
+  cmakecmd+=("-DENABLE_NUMPY=ON")
+  cmakecmd+=("-DENABLE_OS_SPECIFIC_INSTALL=OFF")
+  cmakecmd+=("-DENABLE_MATCH=OFF")
+  cmakecmd+=("-DENABLE_PETSC=OFF")
+  cmakecmd+=("-DENABLE_SLEPC=OFF")
   cmakecmd+=("../")
 
   buildcmd cmake.log "${cmakecmd[@]}"
