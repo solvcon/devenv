@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+set -e
+
+pkgname=sqlite
+
+if [ -z "${SYNCGIT}" ]; then
+
+  pkgver=${VERSION:-3360000}
+  # version 3.36.0 source code of "amalgamation"
+  # https://www.sqlite.org/2021/sqlite-autoconf-3360000.tar.gz
+  pkgfull=${pkgname}-autoconf-${pkgver}
+  pkgfn=${pkgfull}.tar.gz
+  pkgurl=https://www.sqlite.org/2021/${pkgfn}
+  download_md5 ${pkgfn} ${pkgurl} f5752052fc5b8e1b539af86a3671eac7
+
+  mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
+  pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
+    tar zxf ${DEVENVDLROOT}/${pkgfn}
+  popd
+
+else
+
+  pkgbranch=${VERSION:-master}
+  pkgfull=$pkgname-$pkgbranch
+
+  # repository url https://github.com/sqlite/sqlite.git
+  echo "Please refer to https://www.sqlite.org/download.html :"
+  echo "Note that a recent version of Tcl is required in order to build from the repository sources."
+  echo
+  echo "It means that you may need to build Tcl in your devenv flavor if you fail to build from git source"
+  echo
+  syncgit ${SYNCGIT} ${pkgname} ${pkgbranch} ${pkgfull}
+
+fi
+
+pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
+
+  buildcmd configure.log ./configure --prefix=${DEVENVPREFIX}
+  buildcmd make.log make
+  buildcmd install.log make install
+
+popd > /dev/null
+
+# vim: set et nobomb ft=bash ff=unix fenc=utf8:
