@@ -2,6 +2,9 @@
 
 # build and install pybind11 for cmake.
 
+echo ${DEVENVROOT}
+echo ${DEVENVFLAVOR}
+
 conda_root=$(which conda)
 
 if [ -z "$conda_root" ] ; then

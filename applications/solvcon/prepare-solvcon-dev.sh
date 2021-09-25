@@ -1,17 +1,18 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # Usage:
 #   source <this script>
 #   or
 #   source <this script> <your-project-folder>
 #
+
 set -x
 
 if [ -z "${DEVENVFLAVOR}" ]
 then
-  SOLVCON_PROJECT=${1:-${HOME}/solvcon}
+  SOLVCON_PROJECT=${HOME}/solvcon
 else
-  SOLVCON_PROJECT=${1:-${DEVENVAPP}}
+  SOLVCON_PROJECT=${DEVENVAPP}
 fi
 
 SCSRC="${SOLVCON_PROJECT}/solvcon"
@@ -51,17 +52,15 @@ conda create -p ${SCSRC_WORKING}/venv-conda --no-default-packages -y python
 source activate ${SCSRC_WORKING}/venv-conda
 
 # prepare all packages to build SOLVCON
-source ${DEVENV_TOOL}/scripts/init
-devenv add ${DEVENV_FLAVOR}
-devenv use ${DEVENV_FLAVOR}
-VERSION=gmsh_3_0_6 devenv build gmsh
-${SCDE_SRC}/conda.sh
-${SCDE_SRC}/build-pybind11-in-conda.sh
+source ${SCDE_SRC}/conda.sh
+source ${SCDE_SRC}/build-pybind11-in-conda.sh
+
+DEVENVFLAVOR_SUB=${DEVENVFLAVOR}
+source ${DEVENVROOT}/scripts/init
+devenv use ${DEVENVFLAVOR_SUB}
+VERSION=3.0.6 devenv build gmsh
 
 set +x
-
-# fetch SOLVCON source
-git clone https://github.com/solvcon/solvcon.git ${SCSRC}
 
 pushd ${SCSRC}
 # make libmarch.so and SOLVCON

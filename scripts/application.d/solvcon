@@ -14,8 +14,6 @@ mkdir -p ${DEVENVAPP}
 
 ln -s ${application_src} ${DEVENVAPP}/${application_name}
 
-
-echo "launching solvcon..."
-${DEVENVROOT}/bin/build-application-solvcon-devenv.sh
+source ${DEVENVROOT}/bin/build-application-solvcon-devenv.sh
 
 # vim: set et nobomb ft=bash ff=unix fenc=utf8:

@@ -1,6 +1,8 @@
-# SCDE: SOLVCON Dev Env
-DEVENV_TOOL=${HOME}/solvcon/devenv
-DEVENV_FLAVOR=${DEVENVFLAVOR}
-SCDE_SRC=${DEVENV_TOOL}/applications/solvcon
+#!/usr/bin/env bash
+# SCDE: SOLVCON application of devenv
+
+SCDE_SRC=${DEVENVROOT}/applications/solvcon
 
 source ${SCDE_SRC}/prepare-solvcon-dev.sh
+
+# vim: set et nobomb ft=bash ff=unix fenc=utf8:
