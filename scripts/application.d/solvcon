@@ -14,6 +14,8 @@ mkdir -p ${DEVENVAPP}
 
 ln -s ${application_src} ${DEVENVAPP}/${application_name}
 
-source ${DEVENVROOT}/bin/build-application-solvcon-devenv.sh
+# devenv scripts to build SOLVCON application
+DEVENVAPPBUILDSRC=${DEVENVROOT}/applications/solvcon
+source ${DEVENVAPPBUILDSRC}/entry.sh
 
 # vim: set et nobomb ft=bash ff=unix fenc=utf8:

@@ -2,11 +2,7 @@
 #
 # Usage:
 #   source <this script>
-#   or
-#   source <this script> <your-project-folder>
 #
-
-set -x
 
 if [ -z "${DEVENVFLAVOR}" ]
 then
@@ -17,7 +13,6 @@ fi
 
 SCSRC="${SOLVCON_PROJECT}/solvcon"
 SCSRC_WORKING="${SOLVCON_PROJECT}/solvcon-working"
-SCDE_SRC=${SCDE_SRC:-${SOLVCON_PROJECT}/devenv}
 MINICONDA_DIR="${SCSRC_WORKING}/miniconda"
 
 export PATH="${SCSRC}:${MINICONDA_DIR}/bin:${PATH}"
@@ -52,15 +47,13 @@ conda create -p ${SCSRC_WORKING}/venv-conda --no-default-packages -y python
 source activate ${SCSRC_WORKING}/venv-conda
 
 # prepare all packages to build SOLVCON
-source ${SCDE_SRC}/conda.sh
-source ${SCDE_SRC}/build-pybind11-in-conda.sh
+source ${DEVENVAPPBUILDSRC}/conda.sh
+source ${DEVENVAPPBUILDSRC}/build-pybind11-in-conda.sh
 
 DEVENVFLAVOR_SUB=${DEVENVFLAVOR}
 source ${DEVENVROOT}/scripts/init
 devenv use ${DEVENVFLAVOR_SUB}
 VERSION=3.0.6 devenv build gmsh
-
-set +x
 
 pushd ${SCSRC}
 # make libmarch.so and SOLVCON
@@ -87,8 +80,19 @@ popd
 
 # A workaround to use packages built or managed by conda.  We could abandon
 # this workaround when devenv is fully integrated and used for SOLVCON
-echo "Re-launch SOLVCON by the following commands:"
+echo
+echo
+echo "Select the devenv flavor we used to build SOLVCON:"
 echo ""
-echo "export PATH="${SCSRC}:${MINICONDA_DIR}/bin:${PATH}""
+echo "source scripts/init"
+echo "devenv use ${DEVENVFLAVOR}"
 echo ""
+echo "Re-launch SOLVCON by the following commands after picking up your devenv flavor:"
+echo ""
+echo 'export PATH=$DEVENVCURRENTROOT/application-solvcon/solvcon-working/miniconda/bin:$PATH'
+echo 'source activate $DEVENVCURRENTROOT/application-solvcon/solvcon-working/venv-conda'
+echo ""
+echo "Your SOLVCON source:"
+echo "${SCSRC}"
+echo
 
