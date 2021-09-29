@@ -29,7 +29,7 @@ fi
 
 pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
 
-  PYTHON=${DEVENVPREFIX}/bin/python3
+  PYTHON=${PYTHON_EXE:-${DEVENVPREFIX}/bin/python3}
 
   buildcmd build.log ${PYTHON} setup.py build -j ${NP}
   buildcmd install.log ${PYTHON} setup.py install
