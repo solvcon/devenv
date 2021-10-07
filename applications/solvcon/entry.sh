@@ -56,7 +56,7 @@ source ${DEVENVROOT}/scripts/init
 unset VERSION
 unset APP_UPSTREAM_PROJECT_ROOT
 devenv use ${DEVENVFLAVOR_SUB}
-VERSION=3.0.6 devenv build gmsh
+devenv build gmsh
 
 python_exe_miniconda=$(which python)
 PYTHON_EXE=${python_exe_miniconda} devenv build cython
