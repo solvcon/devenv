@@ -52,8 +52,14 @@ source ${DEVENVAPPBUILDSRC}/build-pybind11-in-conda.sh
 
 DEVENVFLAVOR_SUB=${DEVENVFLAVOR}
 source ${DEVENVROOT}/scripts/init
+# just in case
+unset VERSION
+unset APP_UPSTREAM_PROJECT_ROOT
 devenv use ${DEVENVFLAVOR_SUB}
-VERSION=3.0.6 devenv build gmsh
+devenv build gmsh
+
+python_exe_miniconda=$(which python)
+PYTHON_EXE=${python_exe_miniconda} devenv build cython
 
 pushd ${SCSRC}
 # make libmarch.so and SOLVCON
