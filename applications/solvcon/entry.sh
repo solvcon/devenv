@@ -13,38 +13,12 @@ fi
 
 SCSRC="${SOLVCON_PROJECT}/solvcon"
 SCSRC_WORKING="${SOLVCON_PROJECT}/solvcon-working"
-MINICONDA_DIR="${SCSRC_WORKING}/miniconda"
 
-export PATH="${SCSRC}:${MINICONDA_DIR}/bin:${PATH}"
+export PATH="${SCSRC}:${PATH}"
+# so python and pip could be found and used
+export PATH=${DEVENVCURRENTROOT}/usr/bin:${PATH}
 
 mkdir -p ${SCSRC_WORKING}
-
-# prepare miniconda
-# please note contrib/conda.sh will use python 3.6 if you want to install
-# paraview with this conda 3.6 python, this issue may happen to you github
-# https://github.com/conda-forge/paraview-feedstock/issues/27 by using 3.8
-# python conda this issue is resolved by the recompiled paraview package and
-# the corresponding libraries
-#
-# install paraview via conda-forge:
-#     conda install -c conda-forge paraview
-case $(uname) in
-  Linux*)
-    platform=Linux
-    ;;
-  Darwin*)
-    platform=MacOSX
-    ;;
-esac
-curl -L https://repo.continuum.io/miniconda/Miniconda3-latest-${platform}-x86_64.sh --output ${SCSRC_WORKING}/miniconda.sh
-
-bash ${SCSRC_WORKING}/miniconda.sh -b -p ${MINICONDA_DIR}
-conda config --set always_yes yes
-conda update -q conda
-
-# create virtual env by conda
-conda create -p ${SCSRC_WORKING}/venv-conda --no-default-packages -y python
-source activate ${SCSRC_WORKING}/venv-conda
 
 DEVENVFLAVOR_SUB=${DEVENVFLAVOR}
 source ${DEVENVROOT}/scripts/init
@@ -52,20 +26,24 @@ source ${DEVENVROOT}/scripts/init
 unset VERSION
 unset APP_UPSTREAM_PROJECT_ROOT
 devenv use ${DEVENVFLAVOR_SUB}
-# openssl will be used by cmake
+# openssl will be used by python and cmake
+# bz2 will be used by solvcon (via python)
 devenv build openssl
+devenv build bzip2
+VERSION=3.8 devenv build python
 devenv build cmake
 # scotch will be used later by libmarch
 # cmake will be used for building scotch
 devenv build scotch
 
 # prepare all packages to build SOLVCON
-source ${DEVENVAPPBUILDSRC}/conda.sh
-source ${DEVENVAPPBUILDSRC}/build-pybind11-in-conda.sh
+pip3 install nose boto paramiko netCDF4 numpy
+devenv build pybind11
 devenv build gmsh
+devenv build hdf
 
-python_exe_miniconda=$(which python)
-PYTHON_EXE=${python_exe_miniconda} devenv build cython
+python_exe_base=$(which python3)
+PYTHON_EXE=${python_exe_base} devenv build cython
 
 pushd ${SCSRC}
 # make libmarch.so and SOLVCON
@@ -90,20 +68,14 @@ pushd ${SCSRC}/sandbox/gas/tube
 popd
 
 
-# A workaround to use packages built or managed by conda.  We could abandon
-# this workaround when devenv is fully integrated and used for SOLVCON
 echo
 echo
 echo "Select the devenv flavor we used to build SOLVCON:"
-echo ""
+echo
 echo "source scripts/init"
 echo "devenv use ${DEVENVFLAVOR}"
-echo ""
-echo "Re-launch SOLVCON by the following commands after picking up your devenv flavor:"
-echo ""
-echo 'export PATH=$DEVENVCURRENTROOT/application-solvcon/solvcon-working/miniconda/bin:$PATH'
-echo 'source activate $DEVENVCURRENTROOT/application-solvcon/solvcon-working/venv-conda'
-echo ""
+echo
+echo
 echo "Your SOLVCON source:"
 echo "${SCSRC}"
 echo
