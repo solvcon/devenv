@@ -46,16 +46,22 @@ conda update -q conda
 conda create -p ${SCSRC_WORKING}/venv-conda --no-default-packages -y python
 source activate ${SCSRC_WORKING}/venv-conda
 
-# prepare all packages to build SOLVCON
-source ${DEVENVAPPBUILDSRC}/conda.sh
-source ${DEVENVAPPBUILDSRC}/build-pybind11-in-conda.sh
-
 DEVENVFLAVOR_SUB=${DEVENVFLAVOR}
 source ${DEVENVROOT}/scripts/init
 # just in case
 unset VERSION
 unset APP_UPSTREAM_PROJECT_ROOT
 devenv use ${DEVENVFLAVOR_SUB}
+# openssl will be used by cmake
+devenv build openssl
+devenv build cmake
+# scotch will be used later by libmarch
+# cmake will be used for building scotch
+devenv build scotch
+
+# prepare all packages to build SOLVCON
+source ${DEVENVAPPBUILDSRC}/conda.sh
+source ${DEVENVAPPBUILDSRC}/build-pybind11-in-conda.sh
 devenv build gmsh
 
 python_exe_miniconda=$(which python)
