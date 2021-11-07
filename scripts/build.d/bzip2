@@ -3,17 +3,22 @@
 set -e
 
 pkgname=bzip2
+pkgbranch=${VERSION:-master}
+pkgfull=$pkgname-$pkgbranch
 
-git clone git://sourceware.org/git/bzip2.git ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgname}
+syncgit https://gitlab.com/bzip2 ${pkgname} ${pkgbranch} ${pkgfull}
 
-pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgname} > /dev/null
+pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
+  mkdir -p build
+  pushd build > /dev/null
+    cmakecmd=("cmake")
+    cmakecmd+=("-DCMAKE_INSTALL_PREFIX=${DEVENVPREFIX}")
+    cmakecmd+=("-DENABLE_SHARED_LIB=ON")
+    cmakecmd+=("../")
 
-  INSTALL_PREFIX=${DEVENVPREFIX}
-  buildcmd make.log make -f Makefile-libbz2_so
-  buildcmd make.log make clean
-  buildcmd make.log make install PREFIX=${INSTALL_PREFIX} -j ${NP}
-  cp libbz2.so.1.0.8 ${DEVENVPREFIX}/lib
-  ln -s ${DEVENVPREFIX}/lib/libbz2.so.1.0.8 ${DEVENVPREFIX}/lib/libbz2.so
-
+    buildcmd cmake.log "${cmakecmd[@]}"
+    buildcmd make.log make -j ${NP}
+    buildcmd install.log make install
+  popd > /dev/null
 popd > /dev/null
 # vim: set et nobomb ft=bash ff=unix fenc=utf8:
