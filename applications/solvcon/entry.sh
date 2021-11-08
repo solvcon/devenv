@@ -30,6 +30,10 @@ devenv use ${DEVENVFLAVOR_SUB}
 # bz2 will be used by solvcon (via python)
 devenv build openssl
 devenv build bzip2
+# sqlite will be used when building python on mac OS for:
+#     error: System version of SQLite does not support loadable extensions
+#     make: *** [sharedmods] Error 1
+devenv build sqlite
 VERSION=3.8 devenv build python
 devenv build cmake
 # scotch will be used later by libmarch
