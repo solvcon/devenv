@@ -2,23 +2,45 @@
 
 set -e
 
-pkgname=bzip2
-pkgbranch=${VERSION:-master}
-pkgfull=$pkgname-$pkgbranch
+if [ -z "${SYNCGIT}" ]; then
+  pkgname=bzip2
+  pkgver=${VERSION:-1.0.8}
+  pkgfull=${pkgname}-${pkgver}
+  pkgfn=${pkgname}-${pkgfull}.zip
+  pkgurl=https://gitlab.com/bzip2/bzip2/-/archive/${pkgfull}/${pkgfn}
 
-syncgit https://gitlab.com/bzip2 ${pkgname} ${pkgbranch} ${pkgfull}
+  download_md5 ${pkgfn} ${pkgurl} 1e9f8675b1346c4a00251cb2dae05c9e
 
-pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
-  mkdir -p build
-  pushd build > /dev/null
-    cmakecmd=("cmake")
-    cmakecmd+=("-DCMAKE_INSTALL_PREFIX=${DEVENVPREFIX}")
-    cmakecmd+=("-DENABLE_SHARED_LIB=ON")
-    cmakecmd+=("../")
+  mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
+    pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
+      unzip ${DEVENVDLROOT}/${pkgfn}
+      pushd "${pkgname}-${pkgfull}" > /dev/null
+        # Added -fPIC into bzip2 CLFAGS
+        sed -i "s/CFLAGS=-Wall*/CFLAGS=-fPIC -Wall/1" Makefile
+        INSTALL_PREFIX=${DEVENVPREFIX}
+        buildcmd make.log make -j ${NP}
+        buildcmd make.log make clean
+        buildcmd make.log make install PREFIX=${INSTALL_PREFIX} -j ${NP}
+      popd > /dev/null
+    popd > /dev/null
+else
+  pkgname=bzip2
+  pkgbranch=${VERSION:-master}
+  pkgfull=$pkgname-$pkgbranch
 
-    buildcmd cmake.log "${cmakecmd[@]}"
-    buildcmd make.log make -j ${NP}
-    buildcmd install.log make install
+  syncgit https://gitlab.com/bzip2 ${pkgname} ${pkgbranch} ${pkgfull}
+  pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
+    mkdir -p build
+    pushd build > /dev/null
+      cmakecmd=("cmake")
+      cmakecmd+=("-DCMAKE_INSTALL_PREFIX=${DEVENVPREFIX}")
+      cmakecmd+=("-DENABLE_SHARED_LIB=ON")
+      cmakecmd+=("../")
+
+      buildcmd cmake.log "${cmakecmd[@]}"
+      buildcmd make.log make -j ${NP}
+      buildcmd install.log make install
+    popd > /dev/null
   popd > /dev/null
-popd > /dev/null
+fi
 # vim: set et nobomb ft=bash ff=unix fenc=utf8:
