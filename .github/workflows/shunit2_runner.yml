@@ -1,4 +1,4 @@
-name: shunit2_runner
+name: Unittest - shunit2
 on:
   push:
   pull_request:
