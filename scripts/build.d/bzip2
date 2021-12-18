@@ -16,7 +16,11 @@ if [ -z "${SYNCGIT}" ]; then
       unzip ${DEVENVDLROOT}/${pkgfn}
       pushd "${pkgname}-${pkgfull}" > /dev/null
         # Added -fPIC into bzip2 CLFAGS
-        sed -i "s/CFLAGS=-Wall*/CFLAGS=-fPIC -Wall/1" Makefile
+        if [ $(uname) == Darwin ]; then
+          sed -i '' "s/CFLAGS=-Wall*/CFLAGS=-fPIC -Wall/1" Makefile
+        elif [ $(uname) == Linux ]; then
+          sed -i "s/CFLAGS=-Wall*/CFLAGS=-fPIC -Wall/1" Makefile
+        fi
         INSTALL_PREFIX=${DEVENVPREFIX}
         buildcmd make.log make -j ${NP}
         buildcmd make.log make clean
