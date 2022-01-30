@@ -10,6 +10,11 @@ application_upstream_project_root=${APP_UPSTREAM_PROJECT_ROOT:-https://github.co
 
 syncgit ${application_upstream_project_root} ${application_name} ${application_branch}
 
+# show the commit info of the application source
+pushd ${application_src}
+git show
+popd
+
 export DEVENVAPP=${DEVENVROOT}/flavors/${DEVENVFLAVOR}/application-${application_name}
 mkdir -p ${DEVENVAPP}
 

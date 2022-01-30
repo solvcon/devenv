@@ -38,10 +38,11 @@ VERSION=3.8 devenv build python
 devenv build cmake
 # scotch will be used later by libmarch
 # cmake will be used for building scotch
-SYNCGIT="yes" devenv build scotch
+devenv build scotch
 
 # prepare all packages to build SOLVCON
-pip3 install nose boto paramiko netCDF4 numpy
+pip3 install nose boto paramiko netCDF4
+pip3 install numpy==1.21.4
 devenv build pybind11
 devenv build gmsh
 devenv build hdf
