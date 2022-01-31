@@ -7,7 +7,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
         matrix:
-          os: [ubuntu-18.04, macos-latest]
+          os: [ubuntu-20.04, macos-latest]
         fail-fast: false
     steps:
     - name: Checkout Repository
@@ -32,7 +32,7 @@ jobs:
       run: |
         sudo apt-get -qqy update
         sudo apt-get -qqy install fakeroot debhelper locales \
-                libffi6 \
+                libffi-dev \
                 liblapack3 liblapack-dev
     - name: Launch SOLVCON
       run: |
