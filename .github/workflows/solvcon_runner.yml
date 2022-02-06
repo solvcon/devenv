@@ -14,66 +14,29 @@ jobs:
       uses: actions/checkout@v2
       with:
         fetch-depth: 1
+    - name: Set DEVENV_WORKSPACE
+      run: echo "DEVENV_WORKSPACE=${GITHUB_WORKSPACE}" >> $GITHUB_ENV
     - name: Configure SSH
       if: matrix.os == 'disable'
       run: |
-        ssh-keygen -t rsa -f ~/.ssh/id_rsa -N ""
-        chmod 700 ~/.ssh/
-        cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
-        chmod 600 ~/.ssh/authorized_keys
-        ssh-keyscan -t rsa localhost >> ~/.ssh/known_hosts
-        ssh-keyscan -t rsa 127.0.0.1 >> ~/.ssh/known_hosts
-        chmod 600 ~/.ssh/known_hosts
-        ls -al ~/.ssh/
-        ssh localhost ls
-        ssh 127.0.0.1 ls
+        source contrib/ci-setup-ssh.sh
     - name: Dependency (Ubuntu)
       if: matrix.os != 'macos-latest'
       run: |
-        sudo apt-get -qqy update
-        sudo apt-get -qqy install fakeroot debhelper locales \
-                libffi-dev \
-                liblapack3 liblapack-dev
+        source ${DEVENV_WORKSPACE}/contrib/ci-setup-apt.sh
     - name: Launch SOLVCON
       run: |
-        source ${GITHUB_WORKSPACE}/scripts/init
+        source ${DEVENV_WORKSPACE}/scripts/init
         devenv add prime
         devenv use prime
         devenv show
         devenv launch solvcon
     - name: Show Dependency
       run: |
-        source ${GITHUB_WORKSPACE}/scripts/init
-        devenv use prime
-        devenv show
-        export
-        which gcc
-        gcc --version
-        which cmake
-        cmake --version
-        which python3
-        python3 --version
-        python3 -c 'import numpy ; print("numpy.__version__:", numpy.__version__)'
-        which gmsh
+        source ${DEVENV_WORKSPACE}/contrib/ci-show-dep.sh
     - name: Show Python Env
       run: |
-        source ${GITHUB_WORKSPACE}/scripts/init
-        devenv use prime
-        devenv show
-        which python3
-        python3 --version
-        python3 -c 'import numpy ; print("numpy.__version__:", numpy.__version__)'
-        python3 -c 'import sys ; print(sys.path)'
-        echo "==============="
-        echo "python globals:"
-        python3 -c 'import numpy, solvcon ; print(globals())'
-        echo "==============="
-        echo "python locals:"
-        python3 -c 'import numpy, solvcon ; print(locals())'
-    - name: SOLVCON Function Test
+        source ${DEVENV_WORKSPACE}/contrib/ci-show-python-env.sh
+    - name: SOLVCON Function Test From Package
       run: |
-        source ${GITHUB_WORKSPACE}/scripts/init
-        devenv use prime
-        devenv show
-        cd ${DEVENVCURRENTROOT}/application-solvcon/solvcon/
-        make SC_PURE_PYTHON=1 test_from_package
+        source ${DEVENV_WORKSPACE}/contrib/ci-solvcon-function-test.sh
