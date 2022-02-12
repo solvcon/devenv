@@ -47,6 +47,7 @@ pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
     cfgcmd+=("LLVM_AR=/usr/bin/ar")
   fi
 
+  # Some Python extension does not work properly without this, e.g., pandas.
   cfgcmd+=("--enable-loadable-sqlite-extensions")
 
   if [[ ${DEVENVFLAVOR} == dbg* ]] ; then

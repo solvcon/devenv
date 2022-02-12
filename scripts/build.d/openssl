@@ -5,12 +5,12 @@ set -e
 if [ -z "${SYNCGIT}" ]; then
 
   pkgname=openssl
-  pkgver=${VERSION:-1.1.1b}
+  pkgver=${VERSION:-1.1.1m}
   pkgfull=$pkgname-$pkgver
   pkgfn=$pkgfull.tar.gz
   pkgurl=https://www.openssl.org/source/$pkgfn
 
-  download_md5 $pkgfn $pkgurl 4532712e7bcc9414f5bce995e4e13930
+  download_md5 $pkgfn $pkgurl 8ec70f665c145c3103f6e330f538a9db
 
   mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
   pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
