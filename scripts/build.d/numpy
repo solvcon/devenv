@@ -24,11 +24,8 @@ rm -f site.cfg
 if [ $(uname) == Darwin ] ; then
   echo "Darwin"
   cat >> site.cfg << EOF
-[openblas]
-libraries = openblas
-library_dirs = ${DEVENVPREFIX}/lib:/usr/local/opt/openblas/lib:/usr/local/lib:/usr/lib
-include_dirs = ${DEVENVPREFIX}/include/openblas:/usr/local/opt/openblas/include:/usr/local/include/openblas:/usr/include/openblas
-runtime_library_dirs = ${DEVENVPREFIX}/lib
+[accelerate]
+libraries = Accelerate, vecLib
 EOF
 elif [ $(uname) == Linux ] ; then
   cat >> site.cfg << EOF
@@ -53,10 +50,15 @@ versionfile_source = numpy/_version.py
 versionfile_build = numpy/_version.py
 tag_prefix = v
 parentdir_prefix = numpy-
+EOF
+
+if [ -z "${NOFORTRAN}" ] ; then
+cat >> setup.cfg << EOF
 
 [config_fc]
 fcompiler = gfortran
 EOF
+fi
 
 # buildcmd build.log $PYTHON setup.py build -j $NP
 buildcmd build.log ${PYTHON} setup.py build -j ${NP} install \
