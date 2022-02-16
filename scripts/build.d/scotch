@@ -17,7 +17,7 @@ if [ -z "${SYNCGIT}" ]; then
   tar xf ${DEVENVDLROOT}/$pkgfn
 else
   pkgname=scotch
-  pkgbranch=${VERSION:-master}
+  pkgbranch=${VERSION:-v6.1.0}
   pkgfull=${pkgname}-${pkgbranch}
 
   # unpack (clone / pull)
