@@ -5,12 +5,12 @@ set -e
 if [ -z "${SYNCGIT}" ]; then
 
   pkgname=Cython
-  pkgver=${VERSION:-0.29.24}
+  pkgver=${VERSION:-0.29.30}
   pkgfull=$pkgname-$pkgver
   pkgfn=$pkgfull.tar.gz
-  pkgurl=https://files.pythonhosted.org/packages/59/e3/78c921adf4423fff68da327cc91b73a16c63f29752efe7beb6b88b6dd79d/$pkgfn
+  pkgurl=https://files.pythonhosted.org/packages/d4/ad/7ce0cccd68824ac9623daf4e973c587aa7e2d23418cd028f8860c80651f5/$pkgfn
 
-  download_md5 $pkgfn $pkgurl 81aff945f5bfdfb86e7a5d24f5467668
+  download_md5 $pkgfn $pkgurl 3cf4001b4be42a263f163865235c39d8
 
   mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
   pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
