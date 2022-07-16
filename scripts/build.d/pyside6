@@ -33,6 +33,9 @@ if [ ! -e ${DEVENVPREFIX}/bin/python3 ]; then
   exit
 fi
 
+# See pyside building reference:
+# https://doc.qt.io/qtforpython/gettingstarted.html
+
 PYTHON=${DEVENVPREFIX}/bin/python3
 
 if [ -z "${LLVM_INSTALL_DIR}" ] ; then
