@@ -1,5 +1,20 @@
 #!/usr/bin/env bash
 
+# This script uses additional environment variables to control the build
+# process:
+#
+# * LLVM_INSTALL_DIR to select the libclang installation for shiboken.
+# * QTPATHS for the installation of QT binary, e.g.,
+#   ${HOME}/opt/qt/6.2.3/macos/bin/qtpaths
+# * PYSIDE_PATCH, if set, patch an older version of PySide (e.g., 6.2) to
+#   accommodate numpy header change.
+#
+# !!IMPORTANT!! Last but not the least:
+#
+# * PYSIDE_BUILD must be set for the script to build.  This guard is here
+#   because it may need some attempts to set the environment variables
+#   correctly.
+
 set -e
 
 SRCSYNC=${SRCSYNC:-git}
