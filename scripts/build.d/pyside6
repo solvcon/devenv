@@ -1,0 +1,109 @@
+#!/usr/bin/env bash
+
+# This script uses additional environment variables to control the build
+# process:
+#
+# * LLVM_INSTALL_DIR to select the libclang installation for shiboken.
+# * QTPATHS for the installation of QT binary, e.g.,
+#   ${HOME}/opt/qt/6.2.3/macos/bin/qtpaths
+# * PYSIDE_PATCH, if set, patch an older version of PySide (e.g., 6.2) to
+#   accommodate numpy header change.
+#
+# !!IMPORTANT!! Last but not the least:
+#
+# * PYSIDE_BUILD must be set for the script to build.  This guard is here
+#   because it may need some attempts to set the environment variables
+#   correctly.
+
+set -e
+
+SRCSYNC=${SRCSYNC:-git}
+
+if [ "${SRCSYNC}" == "tarball" ] ; then
+
+  display -e "\${SRCSYNC} ${SRCSYNC} not supported by this package"
+  exit
+
+elif [ "${SRCSYNC}" == "git" ] ; then
+
+  pkgname=pyside-setup
+  pkgbranch=${VERSION:-dev}
+  pkgfull=$pkgname
+
+  # unpack (clone)
+  syncgit https://code.qt.io/pyside ${pkgname} ${pkgbranch} ${pkgfull}
+
+else
+
+  display -e "Invalid \${SRCSYNC} ${SRCSYNC}"
+  exit
+
+fi
+
+# build.
+
+# prepare files for building.
+if [ ! -e ${DEVENVPREFIX}/bin/python3 ]; then
+  display -e "Python3 not exist!!"
+  exit
+fi
+
+# See pyside building reference:
+# https://doc.qt.io/qtforpython/gettingstarted.html
+
+PYTHON=${DEVENVPREFIX}/bin/python3
+
+if [ -z "${LLVM_INSTALL_DIR}" ] ; then
+  # set LLVM_INSTALL_DIR to select the libclang installation for shiboken.
+  # For example, a brew installed libclang may be specified with:
+  # export LLVM_INSTALL_DIR=/opt/homebrew/opt/llvm
+  echo "\${LLVM_INSTALL_DIR} is not set, shiboken might not find libclang"
+fi
+
+if [ -z "${QTPATHS}" ] ; then
+  # A locally installed qt might be specified with:
+  # export QTPATHS=${HOME}/opt/qt/6.2.3/macos/bin/qtpaths
+  echo "\${QTPATHS} is not set, pyside might not find qt"
+fi
+
+pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
+
+  if [ -n "${PYSIDE_PATCH}" ] ; then
+    # Patch for older pyside6 with newer numpy.
+    patch -p1 << EOF
+diff --git a/sources/shiboken6/libshiboken/sbknumpyarrayconverter.cpp b/sources/shiboken6/libshiboken/sbknumpyarrayconverter.cpp
+index 996968fa1..cc25b349d 100644
+--- a/sources/shiboken6/libshiboken/sbknumpyarrayconverter.cpp
++++ b/sources/shiboken6/libshiboken/sbknumpyarrayconverter.cpp
+@@ -116,8 +116,13 @@ std::ostream &operator<<(std::ostream &str, PyArrayObject *o)
+             str << " NPY_ARRAY_NOTSWAPPED";
+         if ((flags & NPY_ARRAY_WRITEABLE) != 0)
+             str << " NPY_ARRAY_WRITEABLE";
++#if NPY_VERSION >= 0x00000010 // NPY_1_23_API_VERSION
++        if ((flags & NPY_ARRAY_WRITEBACKIFCOPY) != 0)
++            str << " NPY_ARRAY_WRITEBACKIFCOPY";
++#else
+         if ((flags & NPY_ARRAY_UPDATEIFCOPY) != 0)
+             str << " NPY_ARRAY_UPDATEIFCOPY";
++#endif
+     } else {
+         str << '0';
+     }
+EOF
+  fi
+
+  if [ -z "${PYSIDE_BUILD}" ] ; then
+    # A locally installed qt might be specified with:
+    # export QTPATHS=${HOME}/opt/qt/6.2.3/macos/bin/qtpaths
+    echo "\${PYSIDE_BUILD} is not set; set it to really build"
+    exit
+  fi
+
+  buildcmd install.log ${PYTHON} setup.py install \
+    --qtpaths=${QTPATHS} \
+    --ignore-git \
+    --reuse-build
+
+popd > /dev/null
+
+# vim: set et nobomb ft=bash ff=unix fenc=utf8:
