@@ -3,7 +3,7 @@
 set -e
 
 pkgname=hdf5
-pkgbranch=${VERSION:-1.8/master}
+pkgbranch=${VERSION:-hdf5_1_8}
 pkgfull=${pkgname}-${pkgbranch}
 
 # unpack (clone / pull)
