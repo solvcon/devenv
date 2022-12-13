@@ -30,3 +30,11 @@ jobs:
         devenv use ${working_flavor}
         devenv show
         SYNCGIT="yes" devenv build scotch
+    - name: hdf5 - git repository
+      run: |
+        working_flavor=hdf5-syncgit
+        source ${GITHUB_WORKSPACE}/scripts/init
+        devenv add ${working_flavor}
+        devenv use ${working_flavor}
+        devenv show
+        devenv build hdf
