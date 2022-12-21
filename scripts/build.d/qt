@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+set -e
+
+if [ -z "${SYNCGIT}" ]; then
+  pkgname=qt
+  pkgmajorver=${MAJOR_VER:-6.4}
+  pkgsubver=${SUB_VER:-1}
+  pkgver=$pkgmajorver.$pkgsubver
+  pkgmd5=${MD5:-4694f47f13f460965d68c17d6e277730}
+  pkgfull=$pkgname-$pkgver
+  pkgfoler=qt-everywhere-src-$pkgver
+
+  pkgfn=$pkgfull.zip
+  pkgurl=https://download.qt.io/official_releases/qt/$pkgmajorver/$pkgver/single/qt-everywhere-src-$pkgver.zip
+
+  download_md5 $pkgfn $pkgurl $pkgmd5
+
+  mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
+  pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src > /dev/null
+    unzip ${DEVENVDLROOT}/$pkgfn
+    mv $pkgfoler $pkgfull
+  popd
+else
+  pkgname=qt
+  pkgbranch=${VERSION:-6.4.1}
+  pkgfull=$pkgname-$pkgbranch
+  syncgit git://code.qt.io/qt qt5 ${pkgbranch} ${pkgfull}
+fi
+
+pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull}
+  if [ -n "${SYNCGIT}" ]; then
+    if [[ -z "$(command -v perl)" ]]; then
+       echo "perl not exist!"
+       exit 1
+    fi
+    perl init-repository -f
+  fi
+
+  mkdir -p build
+  cd build
+  cmakecmd=("cmake")
+  cmakecmd+=("-DCMAKE_INSTALL_PREFIX=${DEVENVPREFIX}")
+  cmakecmd+=("../")
+
+  buildcmd cmake.log "${cmakecmd[@]}"
+  buildcmd make.log make install -j $NP
+popd
+
+# vim: set et nobomb ft=bash ff=unix fenc=utf8:
