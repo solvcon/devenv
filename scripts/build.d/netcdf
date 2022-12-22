@@ -6,12 +6,13 @@ if [ -z "${SYNCGIT}" ]; then
   pkgname=netcdf
   pkgver=${VERSION:-4.4.1.1}
   pkgfull=$pkgname-$pkgver
+  pkgmd5=${PKGMD5:-5b851c3dc0a54185aecb44980ed3a334}
 
   pkgfn=$pkgfull.tar.gz
   pkgurl=ftp://ftp.unidata.ucar.edu/pub/$pkgname/$pkgfn
 
   # download tarball
-  download_md5 $pkgfn $pkgurl 5b851c3dc0a54185aecb44980ed3a334
+  download_md5 $pkgfn $pkgurl $pkgmd5
 
   # unpack.
   mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
