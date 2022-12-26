@@ -7,18 +7,18 @@ if [ -z "${SYNCGIT}" ]; then
   pkgmajorver=${MAJOR_VER:-6.4}
   pkgsubver=${SUB_VER:-1}
   pkgver=$pkgmajorver.$pkgsubver
-  pkgmd5=${MD5:-4694f47f13f460965d68c17d6e277730}
+  pkgmd5=${MD5:-ae18c8d4c2d0b8fb757c6881f6e273ea}
   pkgfull=$pkgname-$pkgver
   pkgfoler=qt-everywhere-src-$pkgver
 
-  pkgfn=$pkgfull.zip
-  pkgurl=https://download.qt.io/official_releases/qt/$pkgmajorver/$pkgver/single/qt-everywhere-src-$pkgver.zip
+  pkgfn=$pkgfull.tar.xz
+  pkgurl=https://download.qt.io/official_releases/qt/$pkgmajorver/$pkgver/single/qt-everywhere-src-$pkgver.tar.xz
 
   download_md5 $pkgfn $pkgurl $pkgmd5
 
   mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
   pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src > /dev/null
-    unzip ${DEVENVDLROOT}/$pkgfn
+    tar Jxf ${DEVENVDLROOT}/$pkgfn
     mv $pkgfoler $pkgfull
   popd
 else
