@@ -2,13 +2,44 @@
 
 set -e
 
-pkgname=CMake
-pkgbranch=${VERSION:-master}
-pkgfull=$pkgname-$pkgbranch
+SRCSYNC=${SRCSYNC:-tarball}
 
-# unpack (clone)
-syncgit https://github.com/Kitware ${pkgname} ${pkgbranch}
+pkgname=cmake
 
+if [ "${SRCSYNC}" == "tarball" ] ; then
+
+  pkgver=${VERSION:-3.25.1}
+  pkgfull=${pkgname}-${pkgver}
+  pkgfn=${pkgfull}.tar.gz
+  pkgurl=https://github.com/Kitware/CMake/releases/download/v${pkgvar}/${pkgname}-${pkgfn}
+
+  download_md5 $pkgfn $pkgurl 521a03b1c36412463eda0348bebf4765
+
+  mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
+  pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src > /dev/null
+    tar xf ${DEVENVDLROOT}/$pkgfn
+  popd > /dev/null
+
+elif [ "${SRCSYNC}" == "git" ] ; then
+
+  pkgbranch=${VERSION:-master}
+  pkgfull=$pkgname
+
+  # unpack (clone)
+  syncgit https://github.com/Kitware ${pkgname} ${pkgbranch}
+
+else
+
+  display -e "Invalid \${SRCSYNC} ${SRCSYNC}"
+  exit
+
+fi
+
+# build.
+
+cfgcmd=("env")
+cfgcmd+=("CFLAGS=-I${DEVENVPREFIX}/include")
+cfgcmd+=("LDFLAGS=-L${DEVENVPREFIX}/lib")
 cfgcmd=("./configure")
 cfgcmd+=("--prefix=${DEVENVPREFIX}")
 
