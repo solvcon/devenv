@@ -2,30 +2,40 @@
 
 set -e
 
-if [ -z "${SYNCGIT}" ]; then
+SRCSYNC=${SRCSYNC:-tarball}
+
+if [ "${SRCSYNC}" == "tarball" ] ; then
 
   pkgname=Cython
-  pkgver=${VERSION:-0.29.30}
-  pkgfull=$pkgname-$pkgver
-  pkgfn=$pkgfull.tar.gz
-  pkgurl=https://files.pythonhosted.org/packages/d4/ad/7ce0cccd68824ac9623daf4e973c587aa7e2d23418cd028f8860c80651f5/$pkgfn
+  pkgver=${VERSION:-0.29.32}
+  pkgfull=${pkgname}-${pkgver}
+  pkgfn=${pkgfull}.tar.gz
+  pkgurl=https://files.pythonhosted.org/packages/4c/76/1e41fbb365ad20b6efab2e61b0f4751518444c953b390f9b2d36cf97eea0/${pkgfn}
 
-  download_md5 $pkgfn $pkgurl 3cf4001b4be42a263f163865235c39d8
+  download_md5 $pkgfn $pkgurl 91c36ea86c00adcc5c1c11cf48b733c0
 
   mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
   pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
     tar xf ${DEVENVDLROOT}/$pkgfn
   popd
 
-else
+elif [ "${SRCSYNC}" == "git" ] ; then
 
   pkgname=cython
   pkgbranch=${VERSION:-master}
   pkgfull=${pkgname}
 
+  # unpack (clone)
   syncgit https://github.com/cython ${pkgname} ${pkgbranch} ${pkgfull}
 
+else
+
+  display -e "Invalid \${SRCSYNC} ${SRCSYNC}"
+  exit
+
 fi
+
+# build.
 
 pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
 

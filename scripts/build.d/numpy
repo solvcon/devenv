@@ -2,12 +2,40 @@
 
 set -e
 
-pkgname=numpy
-pkgbranch=${VERSION:-main}
-pkgfull=${pkgname}
+SRCSYNC=${SRCSYNC:-tarball}
 
-# unpack (clone / pull)
-syncgit https://github.com/numpy ${pkgname} ${pkgbranch} ${pkgfull}
+pkgname=numpy
+
+if [ "${SRCSYNC}" == "tarball" ] ; then
+
+  pkgver=${VERSION:-1.24.1}
+  pkgfull=${pkgname}-${pkgver}
+  pkgfn=${pkgfull}.tar.gz
+  pkgurl=https://github.com/${pkgname}/${pkgname}/releases/download/v${pkgver}/${pkgfn}
+
+  download_md5 $pkgfn $pkgurl dd3aaeeada8e95cc2edf9a3a4aa8b5af
+
+  mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
+  pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src > /dev/null
+    tar xf ${DEVENVDLROOT}/$pkgfn
+  popd > /dev/null
+
+elif [ "${SRCSYNC}" == "git" ] ; then
+
+  pkgbranch=${VERSION:-main}
+  pkgfull=${pkgname}
+
+  # unpack (clone)
+  syncgit https://github.com/${pkgname} ${pkgname} ${pkgbranch} ${pkgfull}
+
+else
+
+  display -e "Invalid \${SRCSYNC} ${SRCSYNC}"
+  exit
+
+fi
+
+# build.
 
 pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
 
@@ -22,12 +50,18 @@ PYTHON=${DEVENVPREFIX}/bin/python3
 rm -f site.cfg
 
 if [ $(uname) == Darwin ] ; then
+  NPY_BLAS_ORDER=Accelerate
   echo "Darwin"
   cat >> site.cfg << EOF
 [accelerate]
 libraries = Accelerate, vecLib
 EOF
 elif [ $(uname) == Linux ] ; then
+  BLAS=${BLAS:-mkl}
+  if [ ${BLAS} == mkl ] ; then
+    NPY_BLAS_ORDER=MKL
+  else
+    NPY_BLAS_ORDER=openblas
   cat >> site.cfg << EOF
 [openblas]
 libraries = openblas
@@ -35,7 +69,10 @@ library_dirs = ${DEVENVPREFIX}/lib:/usr/local/lib:/usr/lib
 include_dirs = ${DEVENVPREFIX}/include/openblas:/usr/local/include/openblas:/usr/include/openblas
 runtime_library_dirs = ${DEVENVPREFIX}/lib
 EOF
+  fi
 fi
+
+export NPY_BLAS_ORDER
 
 rm -f setup.cfg
 cat >> setup.cfg << EOF
