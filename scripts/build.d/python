@@ -2,9 +2,7 @@
 
 set -e
 
-pkgname=cpython
-pkgbranch=${VERSION:-main}
-pkgfull=${pkgname}
+SRCSYNC=${SRCSYNC:-tarball}
 
 trap 'get_pip $? $LINENO' ERR
 
@@ -15,11 +13,41 @@ get_pip() {
   echo "    $ devenv build openssl"
 }
 
-syncgit https://github.com/python ${pkgname} ${pkgbranch} ${pkgfull}
+if [ "${SRCSYNC}" == "tarball" ] ; then
+
+  pkgname=Python
+  pkgver=${VERSION:-3.11.1}
+  pkgfull=${pkgname}-${pkgver}
+  pkgfn=${pkgfull}.tar.xz
+  pkgurl=https://www.python.org/ftp/python/${pkgver}/${pkgfn}
+
+  download_md5 $pkgfn $pkgurl 4efe92adf28875c77d3b9b2e8d3bc44a
+
+  mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
+  pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src > /dev/null
+    tar xf ${DEVENVDLROOT}/$pkgfn
+  popd > /dev/null
+
+elif [ "${SRCSYNC}" == "git" ] ; then
+
+  pkgname=cpython
+  pkgbranch=${VERSION:-master}
+  pkgfull=${pkgname}
+
+  # unpack (clone)
+  syncgit https://github.com/python ${pkgname} ${pkgbranch} ${pkgfull}
+
+else
+
+  display -e "Invalid \${SRCSYNC} ${SRCSYNC}"
+  exit
+
+fi
+
+# build.
 
 pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
 
-  # build
   PREFIX=${DEVENVPREFIX}
   ARCH=64
 
@@ -56,8 +84,8 @@ pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
 
   # build.
   buildcmd configure.log "${cfgcmd[@]}"
-  buildcmd make.log make build_all -j ${NP}
-  buildcmd install.log make install
+  buildcmd test.log make test -j ${NP}
+  buildcmd install.log make install -j ${NP}
 
   # check python version
   PY_BIN=${PREFIX}/bin/python3

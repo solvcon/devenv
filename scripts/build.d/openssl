@@ -2,7 +2,9 @@
 
 set -e
 
-if [ -z "${SYNCGIT}" ]; then
+SRCSYNC=${SRCSYNC:-tarball}
+
+if [ "${SRCSYNC}" == "tarball" ] ; then
 
   pkgname=openssl
   pkgver=${VERSION:-1.1.1m}
@@ -17,13 +19,18 @@ if [ -z "${SYNCGIT}" ]; then
     tar xf ${DEVENVDLROOT}/$pkgfn
   popd
 
-else
+elif [ "${SRCSYNC}" == "git" ] ; then
 
   pkgname=openssl
   pkgbranch=${VERSION:-master}
   pkgfull=${pkgname}
 
   syncgit https://github.com/openssl ${pkgname} ${pkgbranch} ${pkgfull}
+
+else
+
+  display -e "Invalid \${SRCSYNC} ${SRCSYNC}"
+  exit
 
 fi
 
