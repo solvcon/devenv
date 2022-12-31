@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+set -e
+
+SRCSYNC=${SRCSYNC:-tarball}
+
+pkgname=git
+
+if [ "${SRCSYNC}" == "tarball" ] ; then
+
+  pkgver=${VERSION:-2.39.0}
+  pkgfull=${pkgname}-${pkgver}
+  pkgfn=${pkgfull}.tar.xz
+  pkgurl=https://mirrors.edge.kernel.org/pub/software/scm/${pkgname}/${pkgfn}
+
+  download_md5 $pkgfn $pkgurl acb276725658b8f1e6cec535a3f67737
+
+  mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
+  pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src > /dev/null
+    tar xf ${DEVENVDLROOT}/$pkgfn
+  popd > /dev/null
+
+elif [ "${SRCSYNC}" == "git" ] ; then
+
+  pkgbranch=${VERSION:-master}
+  pkgfull=$pkgname
+
+  # unpack (clone)
+  syncgit https://github.com/${pkgname} ${pkgname} ${pkgbranch} ${pkgfull}
+
+else
+
+  display -e "Invalid \${SRCSYNC} ${SRCSYNC}"
+  exit
+
+fi
+
+# build.
+
+cfgcmd=("env")
+cfgcmd+=("CFLAGS=-I${DEVENVPREFIX}/include")
+cfgcmd+=("LDFLAGS=-L${DEVENVPREFIX}/lib")
+cfgcmd+=("./configure")
+cfgcmd+=("--prefix=${DEVENVPREFIX}")
+
+pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
+
+  buildcmd configure.log "${cfgcmd[@]}"
+  buildcmd make.log make all doc -j $NP
+  buildcmd install.log make install install-doc
+
+popd > /dev/null
+
+# vim: set et nobomb ft=bash ff=unix fenc=utf8:
+
