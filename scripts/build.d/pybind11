@@ -2,17 +2,17 @@
 
 set -e
 
-SRCSYNC=${SRCSYNC:-git}
+SRCSYNC=${SRCSYNC:-tarball}
 
 if [ "${SRCSYNC}" == "tarball" ] ; then
 
   pkgname=pybind11
-  pkgver=${VERSION:-2.7.0}
-  pkgfull=$pkgname-$pkgver
-  pkgfn=$pkgfull.tar.gz
-  pkgurl=https://github.com/pybind/pybind11/archive/refs/tags/v${pkgver}.tar.gz
+  pkgver=${VERSION:-2.10.2}
+  pkgfull=${pkgname}-${pkgver}
+  pkgfn=${pkgfull}.tar.gz
+  pkgurl=https://github.com/pybind/pybind11/archive/refs/tags/v${pkgfull}
 
-  download_md5 $pkgfn $pkgurl bd742c80621babef4814cc2df041490d
+  download_md5 $pkgfn $pkgurl 695df9e99d92cdaa7fd0449fc5f30c26
 
   mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
   pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src > /dev/null
