@@ -28,6 +28,11 @@ elif [ "${SRCSYNC}" == "git" ] ; then
   # unpack (clone)
   syncgit https://github.com/${pkgname} ${pkgname} ${pkgbranch} ${pkgfull}
 
+  if [[ -f "${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull}/.gitmodules" ]] ; then
+    pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
+    git submodule update --init
+    popd > /dev/null
+  fi
 else
 
   display -e "Invalid \${SRCSYNC} ${SRCSYNC}"
