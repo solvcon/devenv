@@ -35,7 +35,7 @@ elif [ "${SRCSYNC}" == "git" ] ; then
   fi
 else
 
-  display -e "Invalid \${SRCSYNC} ${SRCSYNC}"
+  devenv_display -e "Invalid \${SRCSYNC} ${SRCSYNC}"
   exit
 
 fi
@@ -46,7 +46,7 @@ pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
 
 # prepare files for building.
 if [ ! -e ${DEVENVPREFIX}/bin/python3 ]; then
-    display -e "Python3 not exist!!"
+    devenv_display -e "Python3 not exist!!"
     exit
 fi
 

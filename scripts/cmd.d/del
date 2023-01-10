@@ -1,10 +1,10 @@
 . ${DEVENVROOT}/scripts/func.d/bash_utils
 
 if [ -z $1 ]; then
-  display -e "must need an argument!!"
+  devenv_display -e "must need an argument!!"
 else
   rm -rf ${DEVENVFLAVORROOT}/$1
-  display "removing '$1' dev environment"
+  devenv_display "removing '$1' dev environment"
 fi
 
 # vim: set et nu nobomb fenc=utf8 ft=bash ff=unix sw=2 ts=2:

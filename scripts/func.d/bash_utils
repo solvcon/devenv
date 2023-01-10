@@ -1,6 +1,6 @@
-LS_PATH=$(unalias ls &> /dev/null; command -v ls) || display -e "couldn't find ls"
+LS_PATH=$(unalias ls &> /dev/null; command -v ls) || devenv_display -e "couldn't find ls"
 
-display() {
+devenv_display() {
   if [[ "${1}" != "-e" ]]; then
     echo -e "${1}"
   else

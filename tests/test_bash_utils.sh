@@ -5,21 +5,21 @@ echo "*** test file: $(basename ${BASH_SOURCE[0]})"
 . ${DEVENVROOT}/scripts/func.d/bash_utils
 
 test_display_type() {
-  expected="display is a function"
-  actual=$(type display | grep "is a")
+  expected="devenv_display is a function"
+  actual=$(type devenv_display | grep "is a")
   assertEquals "${expected}" "${actual}"
 }
 
 test_display() {
   expected="devenv shunit2 unittest"
-  actual=$(display 'devenv shunit2 unittest')
+  actual=$(devenv_display 'devenv shunit2 unittest')
   assertEquals "${expected}" "${actual}"
 }
 
 test_display_e() {
   expected_stdin=""
   expected_return_code=87
-  actual_stdin=$(display -e 'devenv shunit2 unittest')
+  actual_stdin=$(devenv_display -e 'devenv shunit2 unittest')
   actual_return_code="$?"
   assertEquals "${expected_return_code}" "${actual_return_code}"
 }

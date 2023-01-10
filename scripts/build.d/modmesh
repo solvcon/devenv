@@ -7,7 +7,7 @@ pkgbranch=${VERSION:-master}
 pkgfull=$pkgname-$pkgbranch
 
 if [ ! -e ${DEVENVPREFIX}/bin/python3 ]; then
-  display -e "Python3 not exist!!"
+  devenv_display -e "Python3 not exist!!"
   exit
 fi
 
