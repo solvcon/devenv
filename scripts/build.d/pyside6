@@ -21,7 +21,7 @@ SRCSYNC=${SRCSYNC:-git}
 
 if [ "${SRCSYNC}" == "tarball" ] ; then
 
-  display -e "\${SRCSYNC} ${SRCSYNC} not supported by this package"
+  devenv_display -e "\${SRCSYNC} ${SRCSYNC} not supported by this package"
   exit
 
 elif [ "${SRCSYNC}" == "git" ] ; then
@@ -35,7 +35,7 @@ elif [ "${SRCSYNC}" == "git" ] ; then
 
 else
 
-  display -e "Invalid \${SRCSYNC} ${SRCSYNC}"
+  devenv_display -e "Invalid \${SRCSYNC} ${SRCSYNC}"
   exit
 
 fi
@@ -44,7 +44,7 @@ fi
 
 # prepare files for building.
 if [ ! -e ${DEVENVPREFIX}/bin/python3 ]; then
-  display -e "Python3 not exist!!"
+  devenv_display -e "Python3 not exist!!"
   exit
 fi
 

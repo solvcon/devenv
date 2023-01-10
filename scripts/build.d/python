@@ -39,7 +39,7 @@ elif [ "${SRCSYNC}" == "git" ] ; then
 
 else
 
-  display -e "Invalid \${SRCSYNC} ${SRCSYNC}"
+  devenv_display -e "Invalid \${SRCSYNC} ${SRCSYNC}"
   exit
 
 fi

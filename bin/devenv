@@ -15,7 +15,7 @@ if [ -f "${DEVENVROOT}/scripts/cmd.d/${cmd}" ]; then
   shift
   bash "${DEVENVROOT}/scripts/cmd.d/${cmd}" "$@"
 elif [[ -z ${cmd} || ${cmd} = help ]]; then
-  display "Usage: ${0##*/} [command]
+  devenv_display "Usage: ${0##*/} [command]
 
 Description:
     Tool to manage development environment in console
@@ -38,7 +38,7 @@ Commands:
     show   - print the current environment"
 
 else
-  display -e "Unrecognized command line argument: '${cmd}'"
+  devenv_display -e "Unrecognized command line argument: '${cmd}'"
 fi
 
 # vim: set et nu nobomb fenc=utf8 ft=bash ff=unix sw=2 ts=2:

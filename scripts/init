@@ -8,17 +8,17 @@ devenv() {
 
   if [[ "$1" == "" ]]; then
     if [ -z "${DEVENVFLAVOR}" ] ; then
-      display "no active flavor: \$DEVENVFLAVOR not defined"
+      devenv_display "no active flavor: \$DEVENVFLAVOR not defined"
     else
-      display "'${DEVENVFLAVOR}' is active: ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}"
+      devenv_display "'${DEVENVFLAVOR}' is active: ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}"
     fi
-    display ""
+    devenv_display ""
     ${DEVENVROOT}/bin/devenv help
   elif [[ "$1" == "use" ]]; then
     shift
 
     if [ ! -d "${DEVENVFLAVORROOT}/$1" ]; then
-      display "flavor $1 is not available"
+      devenv_display "flavor $1 is not available"
       return
     fi
 
@@ -31,11 +31,11 @@ devenv() {
     echo "now using '${DEVENVFLAVOR}'"
   elif [[ "$1" == "off" ]]; then
     if [ -z "${DEVENVFLAVOR}" ] ; then
-      display "\$DEVENVFLAVOR not defined"
+      devenv_display "\$DEVENVFLAVOR not defined"
       return
     fi
 
-    display "the flavor '${DEVENVFLAVOR}' to be turned off"
+    devenv_display "the flavor '${DEVENVFLAVOR}' to be turned off"
     devenv_act nameremove ${DEVENVFLAVOR}
     export DEVENVCURRENTROOT="/dev/null"
   elif [[ "$1" == "help" ]]; then
