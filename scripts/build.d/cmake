@@ -11,7 +11,7 @@ if [ "${SRCSYNC}" == "tarball" ] ; then
   pkgver=${VERSION:-3.25.1}
   pkgfull=${pkgname}-${pkgver}
   pkgfn=${pkgfull}.tar.gz
-  pkgurl=https://github.com/Kitware/CMake/releases/download/v${pkgvar}/${pkgname}-${pkgfn}
+  pkgurl=https://github.com/Kitware/CMake/releases/download/v${pkgver}/${pkgfn}
 
   download_md5 $pkgfn $pkgurl 521a03b1c36412463eda0348bebf4765
 
