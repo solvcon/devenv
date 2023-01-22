@@ -56,25 +56,34 @@ _devenv() {
   case "${cmd}" in
     use|del)
       [[ $COMP_CWORD > 2 ]] && return 1
-      COMPREPLY=(
+      flavors=$(
         . ${DEVENVROOT}/scripts/func.d/bash_utils
-        $(compgen -W "$(get_list flavor)" -- ${cur})
+        get_list flavor
+      )
+      COMPREPLY=(
+        $(compgen -W "${flavors}" -- ${cur})
       )
       return 0
       ;;
     build)
       [[ $COMP_CWORD > 2 ]] && return 1
-      COMPREPLY=(
+      builds=$(
         . ${DEVENVROOT}/scripts/func.d/bash_utils
-        $(compgen -W "$(get_list build)" -- ${cur})
+        get_list build
+      )
+      COMPREPLY=(
+        $(compgen -W "${builds}" -- ${cur})
       )
       return 0
       ;;
     launch)
       [[ $COMP_CWORD > 2 ]] && return 1
-      COMPREPLY=(
+      applications=$(
         . ${DEVENVROOT}/scripts/func.d/bash_utils
-        $(compgen -W "$(get_list application)" -- ${cur})
+        get_list application
+      )
+      COMPREPLY=(
+        $(compgen -W "${applications}" -- ${cur})
       )
       return 0
       ;;
