@@ -1,5 +1,8 @@
-. ${DEVENVROOT}/scripts/func.d/bash_utils
+_list() {
+  . ${DEVENVROOT}/scripts/func.d/bash_utils
 
-devenv_display "$(get_list flavor)"
+  devenv_display "$(get_list flavor)"
+}
 
+_list
 # vim: set et nu nobomb fenc=utf8 ft=bash ff=unix sw=2 ts=2:

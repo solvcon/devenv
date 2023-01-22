@@ -46,7 +46,6 @@ devenv() {
 }
 
 _devenv() {
-  . ${DEVENVROOT}/scripts/func.d/bash_utils
 
   local cur prev opts base
   COMPREPLY=()
@@ -57,27 +56,40 @@ _devenv() {
   case "${cmd}" in
     use|del)
       [[ $COMP_CWORD > 2 ]] && return 1
-      COMPREPLY=( $(compgen -W "$(get_list flavor)" -- ${cur}) )
+      COMPREPLY=(
+        . ${DEVENVROOT}/scripts/func.d/bash_utils
+        $(compgen -W "$(get_list flavor)" -- ${cur})
+      )
       return 0
       ;;
     build)
       [[ $COMP_CWORD > 2 ]] && return 1
-      COMPREPLY=( $(compgen -W "$(get_list build)" -- ${cur}) )
+      COMPREPLY=(
+        . ${DEVENVROOT}/scripts/func.d/bash_utils
+        $(compgen -W "$(get_list build)" -- ${cur})
+      )
       return 0
       ;;
     launch)
       [[ $COMP_CWORD > 2 ]] && return 1
-      COMPREPLY=( $(compgen -W "$(get_list application)" -- ${cur}) )
+      COMPREPLY=(
+        . ${DEVENVROOT}/scripts/func.d/bash_utils
+        $(compgen -W "$(get_list application)" -- ${cur})
+      )
       return 0
       ;;
     *)
       [[ $COMP_CWORD > 1 ]] && return 1
-      cmds=$(get_list cmd)
+      cmds=$(
+        . ${DEVENVROOT}/scripts/func.d/bash_utils
+        get_list cmd
+      )
       cmds+=" use off"
       COMPREPLY=($(compgen -W "${cmds}" -- ${cur}))
       return 0
       ;;
   esac
+
 }
 complete -F _devenv devenv
 

@@ -1,9 +1,12 @@
-. ${DEVENVROOT}/scripts/func.d/bash_utils
+_show() {
+  . ${DEVENVROOT}/scripts/func.d/bash_utils
 
-if [ -z "${DEVENVFLAVOR}" ]; then
-  devenv_display "no flavor in use"
-else
-  devenv_display "current flavor is ${DEVENVFLAVOR}"
-fi
+  if [ -z "${DEVENVFLAVOR}" ]; then
+    devenv_display "no flavor in use"
+  else
+    devenv_display "current flavor is ${DEVENVFLAVOR}"
+  fi
+}
 
+_show
 # vim: set et nu nobomb fenc=utf8 ft=bash ff=unix sw=2 ts=2:
