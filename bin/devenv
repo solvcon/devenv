@@ -8,40 +8,37 @@ if [ -z "${DEVENVROOT}" ] ; then
   exit 1
 fi
 
-_devenv_impl() {
-  . ${DEVENVROOT}/scripts/func.d/bash_utils
+. ${DEVENVROOT}/scripts/func.d/bash_utils
 
-  cmd=$1
-  if [ -f "${DEVENVROOT}/scripts/cmd.d/${cmd}" ]; then
-    shift
-    bash "${DEVENVROOT}/scripts/cmd.d/${cmd}" "$@"
-  elif [[ -z ${cmd} || ${cmd} = help ]]; then
-    devenv_display "Usage: ${0##*/} [command]
+cmd=$1
+if [ -f "${DEVENVROOT}/scripts/cmd.d/${cmd}" ]; then
+  shift
+  bash "${DEVENVROOT}/scripts/cmd.d/${cmd}" "$@"
+elif [[ -z ${cmd} || ${cmd} = help ]]; then
+  devenv_display "Usage: ${0##*/} [command]
 
-  Description:
-      Tool to manage development environment in console
+Description:
+    Tool to manage development environment in console
 
-  Variables:
-      DEVENVROOT=${DEVENVROOT}
-      DEVENVDLROOT=${DEVENVDLROOT}
-      DEVENVFLAVOR=${DEVENVFLAVOR}
-      DEVENVFLAVORROOT=${DEVENVFLAVORROOT}
-      DEVENVCURRENTROOT=${DEVENVCURRENTROOT}
+Variables:
+    DEVENVROOT=${DEVENVROOT}
+    DEVENVDLROOT=${DEVENVDLROOT}
+    DEVENVFLAVOR=${DEVENVFLAVOR}
+    DEVENVFLAVORROOT=${DEVENVFLAVORROOT}
+    DEVENVCURRENTROOT=${DEVENVCURRENTROOT}
 
-  Commands:
-      list   - list all available environments
-      use    - activate an environment
-      off    - deactivate the environment
-      add    - create a new environment directory
-      del    - delete a existing environment directory
-      build  - build a package in the active environment
-      launch - launch an application
-      show   - print the current environment"
+Commands:
+    list   - list all available environments
+    use    - activate an environment
+    off    - deactivate the environment
+    add    - create a new environment directory
+    del    - delete a existing environment directory
+    build  - build a package in the active environment
+    launch - launch an application
+    show   - print the current environment"
 
-  else
-    devenv_display -e "Unrecognized command line argument: '${cmd}'"
-  fi
-}
+else
+  devenv_display -e "Unrecognized command line argument: '${cmd}'"
+fi
 
-_devenv_impl "$@"
 # vim: set et nu nobomb fenc=utf8 ft=bash ff=unix sw=2 ts=2:

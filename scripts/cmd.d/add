@@ -1,15 +1,12 @@
-_add() {
-  . ${DEVENVROOT}/scripts/func.d/bash_utils
+. ${DEVENVROOT}/scripts/func.d/bash_utils
 
-  if [ ! -d "${DEVENVFLAVORROOT}/$1" ]; then
-    mkdir -p ${DEVENVFLAVORROOT}/$1
-    devenv_display "create '${1}' dev environment."
-  elif [ -z $1 ]; then
-    devenv_display -e "must need an argument!!"
-  else
-    devenv_display -e "'$1' already exist!!"
-  fi
-}
+if [ ! -d "${DEVENVFLAVORROOT}/$1" ]; then
+  mkdir -p ${DEVENVFLAVORROOT}/$1
+  devenv_display "create '${1}' dev environment."
+elif [ -z $1 ]; then
+  devenv_display -e "must need an argument!!"
+else
+  devenv_display -e "'$1' already exist!!"
+fi
 
-_add "$@"
 # vim: set et nu nobomb fenc=utf8 ft=bash ff=unix sw=2 ts=2:

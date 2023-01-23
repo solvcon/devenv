@@ -1,9 +1,6 @@
-_packages() {
-  . ${DEVENVROOT}/scripts/func.d/bash_utils
+. ${DEVENVROOT}/scripts/func.d/bash_utils
 
-  devenv_display "Packages supported by devenv:";
-  devenv_display "$(get_list build)";
-}
+devenv_display "Packages supported by devenv:";
+devenv_display "$(get_list build)";
 
-_packages
 # vim: set et nu nobomb fenc=utf8 ft=bash ff=unix sw=2 ts=2:

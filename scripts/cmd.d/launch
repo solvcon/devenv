@@ -1,20 +1,17 @@
-_launch() {
-  . ${DEVENVROOT}/scripts/func.d/bash_utils
+. ${DEVENVROOT}/scripts/func.d/bash_utils
 
-  script="${DEVENVROOT}/scripts/application.d/$1"
-  if [ ! -f "${script}" ]; then
-    devenv_display -e "'$1' not defined"
-  fi
+script="${DEVENVROOT}/scripts/application.d/$1"
+if [ ! -f "${script}" ]; then
+  devenv_display -e "'$1' not defined"
+fi
 
-  if [ -z "${DEVENVFLAVOR}" ] ; then
-    devenv_display -e "\$DEVENVFLAVOR not defined"
-  fi
+if [ -z "${DEVENVFLAVOR}" ] ; then
+  devenv_display -e "\$DEVENVFLAVOR not defined"
+fi
 
-  . ${DEVENVROOT}/scripts/func.d/build_utils
-  devenv_display "Execute building script \"${script}\" ${@:$(($#+1))} ..."
-  . ${script}
-  devenv_display "Finished building script \"${script}\"."
-}
+. ${DEVENVROOT}/scripts/func.d/build_utils
+devenv_display "Execute building script \"${script}\" ${@:$(($#+1))} ..."
+. ${script}
+devenv_display "Finished building script \"${script}\"."
 
-_launch "$@"
 # vim: set et nu nobomb fenc=utf8 ft=sh ff=unix sw=2 ts=2:
