@@ -3,46 +3,57 @@ export DEVENVROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 . ${DEVENVROOT}/scripts/env.d/vars
 
 devenv() {
-  . ${DEVENVROOT}/scripts/func.d/bash_utils
   . ${DEVENVROOT}/scripts/env.d/devenv_impl
+  case "$1" in
+    "")
+      (
+        . ${DEVENVROOT}/scripts/func.d/bash_utils
+        if [ -z "${DEVENVFLAVOR}" ] ; then
+          devenv_display "no active flavor: \$DEVENVFLAVOR not defined"
+        else
+          devenv_display "'${DEVENVFLAVOR}' is active: ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}"
+        fi
+        devenv_display ""
+        ${DEVENVROOT}/bin/devenv help
+      )
+      ;;
+    use)
+      shift
+      (
+        . ${DEVENVROOT}/scripts/func.d/bash_utils
+        if [ ! -d "${DEVENVFLAVORROOT}/$1" ]; then
+          devenv_display "flavor $1 is not available"
+          return
+        fi
+      )
+      if [ ! -z "${DEVENVFLAVOR}" ] ; then
+        devenv_act nameremove ${DEVENVFLAVOR}
+      fi
 
-  if [[ "$1" == "" ]]; then
-    if [ -z "${DEVENVFLAVOR}" ] ; then
-      devenv_display "no active flavor: \$DEVENVFLAVOR not defined"
-    else
-      devenv_display "'${DEVENVFLAVOR}' is active: ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}"
-    fi
-    devenv_display ""
-    ${DEVENVROOT}/bin/devenv help
-  elif [[ "$1" == "use" ]]; then
-    shift
+      devenv_act namemunge $1
+      export DEVENVCURRENTROOT=${DEVENVFLAVORROOT}/${DEVENVFLAVOR}
+      echo "now using '${DEVENVFLAVOR}'"
+      ;;
+    off)
+      (
+        . ${DEVENVROOT}/scripts/func.d/bash_utils
+        if [ -z "${DEVENVFLAVOR}" ] ; then
+          devenv_display "\$DEVENVFLAVOR not defined"
+          return
+        fi
 
-    if [ ! -d "${DEVENVFLAVORROOT}/$1" ]; then
-      devenv_display "flavor $1 is not available"
-      return
-    fi
-
-    if [ ! -z "${DEVENVFLAVOR}" ] ; then
+        devenv_display "the flavor '${DEVENVFLAVOR}' to be turned off"
+      )
       devenv_act nameremove ${DEVENVFLAVOR}
-    fi
-
-    devenv_act namemunge $1
-    export DEVENVCURRENTROOT=${DEVENVFLAVORROOT}/${DEVENVFLAVOR}
-    echo "now using '${DEVENVFLAVOR}'"
-  elif [[ "$1" == "off" ]]; then
-    if [ -z "${DEVENVFLAVOR}" ] ; then
-      devenv_display "\$DEVENVFLAVOR not defined"
-      return
-    fi
-
-    devenv_display "the flavor '${DEVENVFLAVOR}' to be turned off"
-    devenv_act nameremove ${DEVENVFLAVOR}
-    export DEVENVCURRENTROOT="/dev/null"
-  elif [[ "$1" == "help" ]]; then
-    ${DEVENVROOT}/bin/devenv "$@"
-  else
-    ${DEVENVROOT}/bin/devenv "$@"
-  fi
+      export DEVENVCURRENTROOT="/dev/null"
+      ;;
+    *)
+      ${DEVENVROOT}/bin/devenv "$@"
+      ;;
+  esac
+  unset -f nameremove
+  unset -f namemunge
+  unset -f devenv_act
 }
 
 _devenv() {
@@ -98,7 +109,6 @@ _devenv() {
       return 0
       ;;
   esac
-
 }
 complete -F _devenv devenv
 
