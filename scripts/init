@@ -27,10 +27,10 @@ devenv() {
         fi
       )
       if [ ! -z "${DEVENVFLAVOR}" ] ; then
-        devenv_act nameremove ${DEVENVFLAVOR}
+        devenv_act devenv_nameremove ${DEVENVFLAVOR}
       fi
 
-      devenv_act namemunge $1
+      devenv_act devenv_namemunge $1
       export DEVENVCURRENTROOT=${DEVENVFLAVORROOT}/${DEVENVFLAVOR}
       echo "now using '${DEVENVFLAVOR}'"
       ;;
@@ -44,15 +44,15 @@ devenv() {
 
         devenv_display "the flavor '${DEVENVFLAVOR}' to be turned off"
       )
-      devenv_act nameremove ${DEVENVFLAVOR}
+      devenv_act devenv_nameremove ${DEVENVFLAVOR}
       export DEVENVCURRENTROOT="/dev/null"
       ;;
     *)
       ${DEVENVROOT}/bin/devenv "$@"
       ;;
   esac
-  unset -f nameremove
-  unset -f namemunge
+  unset -f devenv_nameremove
+  unset -f devenv_namemunge
   unset -f devenv_act
 }
 
