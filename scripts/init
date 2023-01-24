@@ -6,6 +6,7 @@ devenv() {
   . ${DEVENVROOT}/scripts/env.d/devenv_impl
   case "$1" in
     "")
+      # create subshell to isolate name space
       (
         . ${DEVENVROOT}/scripts/func.d/bash_utils
         if [ -z "${DEVENVFLAVOR}" ] ; then
@@ -19,6 +20,7 @@ devenv() {
       ;;
     use)
       shift
+      # create subshell to isolate name space
       (
         . ${DEVENVROOT}/scripts/func.d/bash_utils
         if [ ! -d "${DEVENVFLAVORROOT}/$1" ]; then
@@ -26,6 +28,8 @@ devenv() {
           return
         fi
       )
+      # cmd use need to manipulate current session's env variables
+      # therefore subshell is not working here
       if [ ! -z "${DEVENVFLAVOR}" ] ; then
         devenv_act devenv_nameremove ${DEVENVFLAVOR}
       fi
@@ -35,6 +39,7 @@ devenv() {
       echo "now using '${DEVENVFLAVOR}'"
       ;;
     off)
+      # create subshell to isolate name space
       (
         . ${DEVENVROOT}/scripts/func.d/bash_utils
         if [ -z "${DEVENVFLAVOR}" ] ; then
@@ -44,6 +49,7 @@ devenv() {
 
         devenv_display "the flavor '${DEVENVFLAVOR}' to be turned off"
       )
+
       devenv_act devenv_nameremove ${DEVENVFLAVOR}
       export DEVENVCURRENTROOT="/dev/null"
       ;;
@@ -51,6 +57,7 @@ devenv() {
       ${DEVENVROOT}/bin/devenv "$@"
       ;;
   esac
+  # unset devenv internal functions
   unset -f devenv_nameremove
   unset -f devenv_namemunge
   unset -f devenv_act
