@@ -1,4 +1,4 @@
-namemunge() {
+devenv_namemunge() {
   if ! echo ${!1} | egrep -q "(^|:)$2($|:)" ; then
     if [ -z "${!1}" ] ; then
       eval "$1=$2"
@@ -13,7 +13,7 @@ namemunge() {
   eval "export $1"
 }
 
-nameremove() {
+devenv_nameremove() {
   eval "export $1=$(echo -n ${!1} | awk -v RS=: -v ORS=: -v var="$2" '$0 != var' | sed 's/:*$//')"
 }
 
@@ -30,10 +30,10 @@ devenv_act() {
   eval "$1 PATH ${DEVENVFLAVORROOT}/$2/usr/bin"
   eval "$1 ${lib_path} ${DEVENVFLAVORROOT}/$2/usr/lib"
 
-  if [[ "$1" == namemunge ]]; then
+  if [[ "$1" == devenv_namemunge ]]; then
     export DEVENVFLAVOR=$2
     export DEVENVPREFIX=${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/usr
-  elif [[ "$1" == "nameremove" ]]; then
+  elif [[ "$1" == "devenv_nameremove" ]]; then
     unset DEVENVFLAVOR
     unset DEVENVPREFIX
   fi
