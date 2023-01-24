@@ -1,5 +1,5 @@
 devenv_namemunge() {
-  if ! echo ${!1} | egrep -q "(^|:)$2($|:)" ; then
+  if ! echo ${!1} | grep -q -E "(^|:)$2($|:)" ; then
     if [ -z "${!1}" ] ; then
       eval "$1=$2"
     else
