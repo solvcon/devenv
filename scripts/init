@@ -58,7 +58,7 @@ devenv() {
 
 _devenv() {
 
-  local cur prev opts base
+  local cur prev opts base cmd cmds flavors builds applications
   COMPREPLY=()
   cur="${COMP_WORDS[COMP_CWORD]}"
   base="${COMP_WORDS[0]}"
