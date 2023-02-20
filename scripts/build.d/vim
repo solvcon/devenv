@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+set -e
+
+SRCSYNC=${SRCSYNC:-tarball}
+
+pkgname=vim
+pkgbranch=${VERSION:-master}
+pkgfull=$pkgname
+
+# unpack (clone)
+syncgit https://github.com/${pkgname} ${pkgname} ${pkgbranch} ${pkgfull}
+
+# build.
+
+cfgcmd=("env")
+cfgcmd+=("CFLAGS=-I${DEVENVPREFIX}/include")
+cfgcmd+=("LDFLAGS=-L${DEVENVPREFIX}/lib")
+cfgcmd+=("./configure")
+cfgcmd+=("--prefix=${DEVENVPREFIX}")
+
+pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
+
+  buildcmd configure.log "${cfgcmd[@]}"
+  buildcmd make.log make -j $NP
+  buildcmd test.log make test -j $NP
+  buildcmd install.log make install
+
+popd > /dev/null
+
+# vim: set et nobomb ft=bash ff=unix fenc=utf8:
