@@ -5,11 +5,35 @@ set -e
 SRCSYNC=${SRCSYNC:-tarball}
 
 pkgname=vim
-pkgbranch=${VERSION:-master}
-pkgfull=$pkgname
 
-# unpack (clone)
-syncgit https://github.com/${pkgname} ${pkgname} ${pkgbranch} ${pkgfull}
+if [ "${SRCSYNC}" == "tarball" ] ; then
+
+  pkgver=${VERSION:-9.0.1336}
+  pkgfull=${pkgname}-${pkgver}
+  pkgfn=${pkgfull}.tar.gz
+  pkgurl=https://github.com/vim/vim/archive/refs/tags/v${pkgver}.tar.gz
+
+  download_md5 $pkgfn $pkgurl 0676f241ad6c8a3944f2519d37e24866
+
+  mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
+  pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src > /dev/null
+    tar xzf ${DEVENVDLROOT}/$pkgfn
+  popd > /dev/null
+
+elif [ "${SRCSYNC}" == "git" ] ; then
+
+  pkgbranch=${VERSION:-master}
+  pkgfull=${pkgname}-${pkgbranch}
+
+  # unpack (clone)
+  syncgit https://github.com/${pkgname} ${pkgname} ${pkgbranch} ${pkgfull}
+
+else
+
+  devenv_display -e "Invalid \${SRCSYNC} ${SRCSYNC}"
+  exit
+
+fi
 
 # build.
 
