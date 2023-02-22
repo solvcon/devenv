@@ -47,7 +47,7 @@ pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
 
   buildcmd configure.log "${cfgcmd[@]}"
   buildcmd make.log make -j $NP
-  buildcmd test.log make test -j $NP
+  [ ! -z "$BUILDTEST" ] && buildcmd test.log make test -j $NP
   buildcmd install.log make install
 
 popd > /dev/null
