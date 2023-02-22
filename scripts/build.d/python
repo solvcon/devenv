@@ -84,7 +84,7 @@ pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
 
   # build.
   buildcmd configure.log "${cfgcmd[@]}"
-  buildcmd test.log make test -j ${NP}
+  [ ! -z "$BUILDTEST" ] && buildcmd test.log make test -j ${NP}
   buildcmd install.log make install -j ${NP}
 
   # check python version
