@@ -10,20 +10,20 @@ if [ "${SRCSYNC}" == "tarball" ] ; then
   pkgver=${VERSION:-2.10.2}
   pkgfull=${pkgname}-${pkgver}
   pkgfn=${pkgfull}.tar.gz
-  pkgurl=https://github.com/pybind/pybind11/archive/refs/tags/v${pkgfull}
+  pkgurl=https://github.com/pybind/pybind11/archive/refs/tags/v${pkgver}.tar.gz
 
   download_md5 $pkgfn $pkgurl 695df9e99d92cdaa7fd0449fc5f30c26
 
   mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
   pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src > /dev/null
-    tar xf ${DEVENVDLROOT}/$pkgfn
+    tar xzf ${DEVENVDLROOT}/$pkgfn
   popd > /dev/null
 
 elif [ "${SRCSYNC}" == "git" ] ; then
 
   pkgname=pybind11
   pkgbranch=${VERSION:-master}
-  pkgfull=$pkgname
+  pkgfull=${pkgname}-${pkgbranch}
 
   # unpack (clone)
   syncgit https://github.com/pybind ${pkgname} ${pkgbranch} ${pkgfull}
