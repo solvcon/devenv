@@ -17,7 +17,7 @@ if [ "${SRCSYNC}" == "tarball" ] ; then
 
   mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
   pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src > /dev/null
-    tar xzf ${DEVENVDLROOT}/$pkgfn
+    tar xf ${DEVENVDLROOT}/$pkgfn
   popd > /dev/null
 
 elif [ "${SRCSYNC}" == "git" ] ; then
