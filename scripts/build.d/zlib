@@ -2,11 +2,36 @@
 
 set -e
 
-pkgname=zlib
-pkgbranch=${VERSION:-master}
-pkgfull=${pkgname}-${pkgbranch}
+SRCSYNC=${SRCSYNC:-tarball}
 
-syncgit https://github.com/madler ${pkgname} ${pkgbranch}
+if [ "${SRCSYNC}" == "tarball" ]; then
+
+  pkgname=zlib
+  pkgver=${VERSION:-v1.2.13}
+  pkgfull=${pkgname}-${pkgver:1}
+  pkgfn=${pkgfull}.tar.gz
+  pkgurl=https://github.com/madler/zlib/archive/refs/tags/${pkgver}.tar.gz
+  download_md5 ${pkgfn} ${pkgurl} 9c7d356c5acaa563555490676ca14d23
+
+  mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
+  pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src > /dev/null
+    tar zxf ${DEVENVDLROOT}/$pkgfn
+  popd > /dev/null
+
+elif [ "${SRCSYNC}" == "git" ]; then
+
+  pkgname=zlib
+  pkgbranch=${VERSION:-master}
+  pkgfull=${pkgname}-${pkgbranch}
+
+  syncgit https://github.com/madler ${pkgname} ${pkgbranch}
+
+else
+
+  devenv_display -e "Invalid \${SRCSYNC} ${SRCSYNC}"
+  exit
+
+fi
 
 pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
 
@@ -16,5 +41,4 @@ pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
   buildcmd install.log make install
 
 popd > /dev/null
-
 # vim: set et nobomb ft=bash ff=unix fenc=utf8:
