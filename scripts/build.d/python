@@ -64,15 +64,18 @@ pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
   cfgcmd+=("--prefix=${PREFIX}")
   cfgcmd+=("--enable-shared")
   cfgcmd+=("--enable-ipv6")
-  cfgcmd+=("--with-ensurepip=no")
   cfgcmd+=("--enable-optimizations")
+  cfgcmd+=("--without-ensurepip")
+  cfgcmd+=("--with-system-expat")
+  cfgcmd+=("--with-system-ffi")
+  cfgcmd+=("--with-system-libmpdec")
+  cfgcmd+=("--with-readline=editline")
   cfgcmd+=("--with-lto")
-  cfgcmd+=("--with-tcltk-includes=-I${PREFIX}/include")
-  cfgcmd+=("--with-tcltk-libs=\"-L${PREFIX}/lib -ltcl8.5 -ltk8.5\"")
   cfgcmd+=("--with-openssl=${DEVENVPREFIX}")
 
   if [[ $(uname) == Darwin ]] ; then
-    cfgcmd+=("LLVM_AR=/usr/bin/ar")
+    cfgcmd+=("--with-dtrace")
+    cfgcmd+=("--with-dbmliborder=ndbm")
   fi
 
   # Some Python extension does not work properly without this, e.g., pandas.
@@ -85,6 +88,9 @@ pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
   # build.
   buildcmd configure.log "${cfgcmd[@]}"
   [ ! -z "$BUILDTEST" ] && buildcmd test.log make test -j ${NP}
+  # If using configure --enable-optimizations, "make profile-opt" may be
+  # replaced with "make install" and two consecutive "make install" are needed.
+  buildcmd profile-opt.log make profile-opt -j ${NP}
   buildcmd install.log make install -j ${NP}
 
   # check python version

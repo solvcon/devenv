@@ -4,7 +4,9 @@ set -e
 
 pkgname=sqlite
 
-if [ -z "${SYNCGIT}" ]; then
+SRCSYNC=${SRCSYNC:-tarball}
+
+if [ "${SRCSYNC}" == "tarball" ] ; then
 
   pkgver=${VERSION:-3360000}
   # version 3.36.0 source code of "amalgamation"
@@ -19,7 +21,7 @@ if [ -z "${SYNCGIT}" ]; then
     tar zxf ${DEVENVDLROOT}/${pkgfn}
   popd
 
-else
+elif [ "${SRCSYNC}" == "git" ] ; then
 
   pkgbranch=${VERSION:-master}
   pkgfull=$pkgname-$pkgbranch
@@ -31,6 +33,11 @@ else
   echo "It means that you may need to build Tcl in your devenv flavor if you fail to build from git source"
   echo
   syncgit ${SYNCGIT} ${pkgname} ${pkgbranch} ${pkgfull}
+
+else
+
+  devenv_display -e "Invalid \${SRCSYNC} ${SRCSYNC}"
+  exit
 
 fi
 
