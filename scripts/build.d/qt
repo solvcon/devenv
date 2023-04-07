@@ -38,6 +38,12 @@ else
   syncgit git://code.qt.io/qt qt5 ${pkgbranch} ${pkgfull}
 fi
 
+# remove symlink check
+# https://github.com/Homebrew/homebrew-core/blob/29bc842d5cdffde2917bce61a1d4eb742cf6d987/Formula/qt.rb#L133
+pushd $pkgsrc/${pkgfull}
+  git apply -v --directory qtbase ${DEVENVROOT}/var/patch/${pkgfull}.patch || true
+popd
+
 rm -rf $pkgsrc/${pkgfull}/build # clean up previous build
 mkdir -p $pkgsrc/${pkgfull}/build
 pushd $pkgsrc/${pkgfull}/build
@@ -48,9 +54,6 @@ pushd $pkgsrc/${pkgfull}/build
     fi
     perl init-repository -f
   fi
-
-  # disable symlink check
-  sed -i 's/qt_internal_check_if_path_has_symlinks("${CMAKE_BINARY_DIR}")/#qt_internal_check_if_path_has_symlinks("${CMAKE_BINARY_DIR}")/' $pkgsrc/${pkgfull}/qtbase/CMakeLists.txt
 
   cfgcmd=("cmake")
   cfgcmd+=("-DCMAKE_INSTALL_PREFIX=${DEVENVPREFIX}")
