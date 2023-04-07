@@ -4,33 +4,38 @@ set -e
 
 if [ -z "${SYNCGIT}" ]; then
   pkgname=qt
-  pkgmajorver=${MAJOR_VER:-6.4}
-  pkgsubver=${SUB_VER:-1}
+  pkgmajorver=${MAJOR_VER:-6.5}
+  pkgsubver=${SUB_VER:-0}
   pkgver=$pkgmajorver.$pkgsubver
-  pkgmd5=${MD5:-ae18c8d4c2d0b8fb757c6881f6e273ea}
+  pkgmd5=${MD5:-10247444e4264ea9cee7d4a7c13efd34}
   pkgfull=$pkgname-$pkgver
   pkgfoler=qt-everywhere-src-$pkgver
 
   pkgfn=$pkgfull.tar.xz
   pkgurl=https://download.qt.io/official_releases/qt/$pkgmajorver/$pkgver/single/qt-everywhere-src-$pkgver.tar.xz
 
+  pkgsrc=${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
+  #pkgsrc=/tmp
+
   download_md5 $pkgfn $pkgurl $pkgmd5
 
-  mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
-  pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src > /dev/null
-    tar Jxf ${DEVENVDLROOT}/$pkgfn
-    mv $pkgfoler $pkgfull
+  mkdir -p $pkgsrc
+  pushd $pkgsrc > /dev/null
+   tar xf ${DEVENVDLROOT}/$pkgfn
+   mv $pkgfoler $pkgfull
   popd
 else
   pkgname=qt
-  pkgbranch=${VERSION:-6.4.1}
+  pkgbranch=${VERSION:-6.5.0}
   pkgfull=$pkgname-$pkgbranch
   # qt5 is expected here, it seems qt did not change its repository name from qt5 to qt6
   # ref : https://wiki.qt.io/Building_Qt_6_from_Git#Getting_the_source_code
   syncgit git://code.qt.io/qt qt5 ${pkgbranch} ${pkgfull}
 fi
 
-pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull}
+rm -rf $pkgsrc/${pkgfull}/build # clean up previous build
+mkdir -p $pkgsrc/${pkgfull}/build
+pushd $pkgsrc/${pkgfull}/build
   if [ -n "${SYNCGIT}" ]; then
     if [[ -z "$(command -v perl)" ]]; then
        echo "perl not exist!"
@@ -39,14 +44,73 @@ pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull}
     perl init-repository -f
   fi
 
-  mkdir -p build
-  cd build
-  cmakecmd=("cmake")
-  cmakecmd+=("-DCMAKE_INSTALL_PREFIX=${DEVENVPREFIX}")
-  cmakecmd+=("../")
+  # disable symlink check
+  sed -i 's/qt_internal_check_if_path_has_symlinks("${CMAKE_BINARY_DIR}")/#qt_internal_check_if_path_has_symlinks("${CMAKE_BINARY_DIR}")/' $pkgsrc/${pkgfull}/qtbase/CMakeLists.txt
 
+  cfgcmd=("cmake")
+  cfgcmd+=("-DCMAKE_INSTALL_PREFIX=${DEVENVPREFIX}")
+  cfgcmd+=("-DCMAKE_BUILD_TYPE=Release")
+  #cfgcmd+=("-DCMAKE_BUILD_TYPE=Debug")
+  #cfgcmd+=("-DBUILD_qtimageformats=OFF")
+  #cfgcmd+=("-DBUILD_qtlanguageserver=OFF")
+  #cfgcmd+=("-DBUILD_qtsvg=OFF")
+  cfgcmd+=("-DBUILD_qtquicktimeline=OFF")
+  cfgcmd+=("-DBUILD_qtquick3d=OFF")
+  cfgcmd+=("-DBUILD_qt5compat=OFF")
+  cfgcmd+=("-DBUILD_qtactiveqt=OFF")
+  cfgcmd+=("-DBUILD_qtcharts=OFF")
+  cfgcmd+=("-DBUILD_qtcoap=OFF")
+  cfgcmd+=("-DBUILD_qtconnectivity=OFF")
+  cfgcmd+=("-DBUILD_qtdatavis3d=OFF")
+  cfgcmd+=("-DBUILD_qtwebsockets=OFF")
+  cfgcmd+=("-DBUILD_qthttpserver=OFF")
+  cfgcmd+=("-DBUILD_qttools=OFF")
+  cfgcmd+=("-DBUILD_qtdoc=OFF")
+  cfgcmd+=("-DBUILD_qtlottie=OFF")
+  cfgcmd+=("-DBUILD_qtmqtt=OFF")
+  cfgcmd+=("-DBUILD_qtnetworkauth=OFF")
+  cfgcmd+=("-DBUILD_qtopcua=OFF")
+  cfgcmd+=("-DBUILD_qtserialport=OFF")
+  cfgcmd+=("-DBUILD_qtlocation=OFF")
+  cfgcmd+=("-DBUILD_qtpositioning=OFF")
+  cfgcmd+=("-DBUILD_qtquick3dphysics=OFF")
+  cfgcmd+=("-DBUILD_qtremoteobjects=OFF")
+  cfgcmd+=("-DBUILD_qtscxml=OFF")
+  cfgcmd+=("-DBUILD_qtsensors=OFF")
+  cfgcmd+=("-DBUILD_qtserialbus=OFF")
+  cfgcmd+=("-DBUILD_qtspeech=OFF")
+  cfgcmd+=("-DBUILD_qttranslations=OFF")
+  cfgcmd+=("-DBUILD_qtvirtualkeyboard=OFF")
+  cfgcmd+=("-DBUILD_qtwayland=OFF")
+  cfgcmd+=("-DBUILD_qtwebchannel=OFF")
+  cfgcmd+=("-DBUILD_qtwebengine=OFF")
+  cfgcmd+=("-DBUILD_qtwebview=OFF")
+  cfgcmd+=("-DBUILD_qtquickeffectmaker=OFF")
+  cfgcmd+=("-DBUILD_qtgrpc=OFF")
+  cfgcmd+=("-DBUILD_qtmultimedia=OFF")
+  #cfgcmd+=("-DBUILD_qtdeclarative=OFF")
+  #cfgcmd+=("-DINPUT_xcb=yes")
+  #cfgcmd+=("-DINPUT_xcb_xlib=yes")
+  #cfgcmd+=("-DINPUT_bundled_xcb_xinput=yes")
+  #cfgcmd+=("-DINPUT_xkbcommon=yes")
+  #cfgcmd+=("-DINPUT_sessionmanager=yes")
+  cfgcmd+=("-DCMAKE_PREFIX_PATH=${DEVENVPREFIX}")
+  cfgcmd+=("-G Ninja")
+  cfgcmd+=("..")
+
+  cmakecmd=("cmake")
+  cmakecmd+=("--build")
+  cmakecmd+=(".")
+  cmakecmd+=("--parallel")
+
+  installcmd=("cmake")
+  installcmd+=("--install")
+  installcmd+=(".")
+
+  buildcmd configure.log "${cfgcmd[@]}"
   buildcmd cmake.log "${cmakecmd[@]}"
-  buildcmd make.log make install -j $NP
+  buildcmd install.log "${installcmd[@]}"
+
 popd
 
 # vim: set et nobomb ft=bash ff=unix fenc=utf8:
