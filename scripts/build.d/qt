@@ -20,10 +20,15 @@ if [ -z "${SYNCGIT}" ]; then
   download_md5 $pkgfn $pkgurl $pkgmd5
 
   mkdir -p $pkgsrc
-  pushd $pkgsrc > /dev/null
-   tar xf ${DEVENVDLROOT}/$pkgfn
-   mv $pkgfoler $pkgfull
-  popd
+  if [ -d $pkgsrc/$pkgfull ];
+  then
+    echo "$pkgfull already exist, skip extract"
+  else
+    pushd $pkgsrc > /dev/null
+    tar xf ${DEVENVDLROOT}/$pkgfn
+    mv $pkgfoler $pkgfull
+    popd
+  fi
 else
   pkgname=qt
   pkgbranch=${VERSION:-6.5.0}
