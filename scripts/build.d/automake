@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+set -e
+
+pkgname=automake
+pkgver=${VERSION:-1.16.5}
+pkgfull=$pkgname-$pkgver
+pkgfn=$pkgfull.tar.gz
+pkgurl=http://ftp.twaren.net/Unix/GNU/gnu/${pkgname}/${pkgfn}
+
+download_md5 $pkgfn $pkgurl 00502a65dee9f9e1a9f47aa55b7de4f7
+
+mkdir -p ${DEVENVCURRENTROOT}/src
+pushd ${DEVENVCURRENTROOT}/src > /dev/null
+  tar xf ${DEVENVDLROOT}/$pkgfn
+popd > /dev/null
+
+cfgcmd=("./configure")
+cfgcmd+=("--prefix=${DEVENVPREFIX}")
+
+pushd ${DEVENVCURRENTROOT}/src/${pkgfull} > /dev/null
+
+  buildcmd configure.log "${cfgcmd[@]}"
+  buildcmd make.log make -j ${NP}
+  buildcmd install.log make install
+
+popd > /dev/null
+
+# vim: set et nobomb ft=bash ff=unix fenc=utf8:
