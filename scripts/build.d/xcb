@@ -1,5 +1,16 @@
 #!/usr/bin/env bash
 
+# XCB Libraries List:
+#
+# Core
+## 1. xcb-proto, 2. util-macros[aka Xorg-macros](libxcb required), 3. libxcb, 4. xcb-util
+# Building sequence of Core is deterministic, changing the order will cause error.
+#
+# Miscellaneous (Qt required)
+## 5. xcb-util-image, 6. xcb-util-renderutil, 7. xcb-util-cursor, 8. xcb-util-wm, 9. xcb-util-keysyms
+#
+# Ref: https://xcb.freedesktop.org/DevelopersGuide/
+
 set -e
 
 pkgname=xcb-proto
