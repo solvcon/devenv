@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
-
-# XCB Libraries List:
 #
+# For the convinience of building and version control for XCB Libraries,
+# several libaries are included in this script.
+#
+# XCB Libraries List:
 # Core
 ## 1. xcb-proto, 2. util-macros[aka Xorg-macros](libxcb required), 3. libxcb, 4. xcb-util
 # Building sequence of Core is deterministic, changing the order will cause error.
