@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
+#
+# Usage: devenv build qt
+#
+# extracting qt source code in HOME is very slow on NCHC machine,
+# to use other src path: QTSRC=/path/to/src devenv build qt.
+# for example: QTSRC=/tmp devenv build qt
+#
 
 set -e
+
+QTSRC=${QTSRC:-${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src}
 
 if [ -z "${SYNCGIT}" ]; then
   pkgname=qt
@@ -14,17 +23,14 @@ if [ -z "${SYNCGIT}" ]; then
   pkgfn=$pkgfull.tar.xz
   pkgurl=https://download.qt.io/official_releases/qt/$pkgmajorver/$pkgver/single/qt-everywhere-src-$pkgver.tar.xz
 
-  pkgsrc=${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
-  #pkgsrc=/tmp
-
   download_md5 $pkgfn $pkgurl $pkgmd5
 
-  mkdir -p $pkgsrc
-  if [ -d $pkgsrc/$pkgfull ];
+  mkdir -p ${QTSRC}
+  if [ -d ${QTSRC}/$pkgfull ];
   then
-    echo "$pkgfull already exist, skip extract"
+    echo "QTSRC: ${QTSRC}/$pkgfull already exist, skip extract"
   else
-    pushd $pkgsrc > /dev/null
+    pushd ${QTSRC} > /dev/null
     tar xf ${DEVENVDLROOT}/$pkgfn
     mv $pkgfoler $pkgfull
     popd
@@ -40,13 +46,13 @@ fi
 
 # remove symlink check
 # https://github.com/Homebrew/homebrew-core/blob/29bc842d5cdffde2917bce61a1d4eb742cf6d987/Formula/qt.rb#L133
-pushd $pkgsrc/${pkgfull}
+pushd ${QTSRC}/${pkgfull}
   git apply -v --directory qtbase ${DEVENVROOT}/var/patch/${pkgfull}.patch || true
 popd
 
-rm -rf $pkgsrc/${pkgfull}/build # clean up previous build
-mkdir -p $pkgsrc/${pkgfull}/build
-pushd $pkgsrc/${pkgfull}/build
+rm -rf ${QTSRC}/${pkgfull}/build # clean up previous build
+mkdir -p ${QTSRC}/${pkgfull}/build
+pushd ${QTSRC}/${pkgfull}/build
   if [ -n "${SYNCGIT}" ]; then
     if [[ -z "$(command -v perl)" ]]; then
        echo "perl not exist!"
