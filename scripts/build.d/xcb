@@ -1,0 +1,234 @@
+#!/usr/bin/env bash
+#
+# For the convinience of building and version control for XCB Libraries,
+# several libaries are included in this script.
+#
+# XCB Libraries List:
+# Core
+## 1. xcb-proto, 2. util-macros[aka Xorg-macros](libxcb required), 3. libxcb, 4. xcb-util
+# Building sequence of Core is deterministic, changing the order will cause error.
+#
+# Miscellaneous (Qt required)
+## 5. xcb-util-image, 6. xcb-util-renderutil, 7. xcb-util-cursor, 8. xcb-util-wm, 9. xcb-util-keysyms
+#
+# Ref: https://xcb.freedesktop.org/DevelopersGuide/
+
+set -e
+
+pkgname=xcb-proto
+pkgver=${VERSION:-1.15.2}
+pkgfull=$pkgname-$pkgver
+pkgfn=$pkgfull.tar.gz
+pkgurl=https://xcb.freedesktop.org/dist/${pkgfn}
+
+download_md5 $pkgfn $pkgurl 4072579f972292332e2a6c75c70ed7b5
+
+mkdir -p ${DEVENVCURRENTROOT}/src
+pushd ${DEVENVCURRENTROOT}/src > /dev/null
+  tar xf ${DEVENVDLROOT}/$pkgfn
+popd > /dev/null
+
+cfgcmd=("./configure")
+cfgcmd+=("--prefix=${DEVENVPREFIX}")
+
+pushd ${DEVENVCURRENTROOT}/src/${pkgfull} > /dev/null
+
+  buildcmd configure.log "${cfgcmd[@]}"
+  buildcmd make.log make -j ${NP}
+  buildcmd install.log make install
+
+popd > /dev/null
+
+pkgname=util-macros
+pkgver=${VERSION:-1.20.0}
+pkgfull=$pkgname-$pkgver
+pkgfn=$pkgfull.tar.gz
+pkgurl=https://www.x.org/archive/individual/util/${pkgfn}
+
+download_md5 $pkgfn $pkgurl 7074a734224a9a953ca08cc0e62b91e3
+
+mkdir -p ${DEVENVCURRENTROOT}/src
+pushd ${DEVENVCURRENTROOT}/src > /dev/null
+  tar xf ${DEVENVDLROOT}/$pkgfn
+popd > /dev/null
+
+cfgcmd=("./configure")
+cfgcmd+=("--prefix=${DEVENVPREFIX}")
+
+pushd ${DEVENVCURRENTROOT}/src/${pkgfull} > /dev/null
+
+  buildcmd configure.log "${cfgcmd[@]}"
+  buildcmd make.log make -j ${NP}
+  buildcmd install.log make install
+
+popd > /dev/null
+
+pkgname=libxcb
+pkgver=${VERSION:-1.15}
+pkgfull=$pkgname-$pkgver
+pkgfn=$pkgfull.tar.gz
+pkgurl=https://xcb.freedesktop.org/dist/${pkgfn}
+
+download_md5 $pkgfn $pkgurl 0254c1e455d1d49f778e687aacc93368
+
+mkdir -p ${DEVENVCURRENTROOT}/src
+pushd ${DEVENVCURRENTROOT}/src > /dev/null
+  tar xf ${DEVENVDLROOT}/$pkgfn
+popd > /dev/null
+
+cfgcmd=("./configure")
+cfgcmd+=("--prefix=${DEVENVPREFIX}")
+
+pushd ${DEVENVCURRENTROOT}/src/${pkgfull} > /dev/null
+
+  buildcmd configure.log "${cfgcmd[@]}"
+  buildcmd make.log make -j ${NP}
+  buildcmd install.log make install
+
+popd > /dev/null
+
+pkgname=xcb-util
+pkgver=${VERSION:-0.4.1}
+pkgfull=$pkgname-$pkgver
+pkgfn=$pkgfull.tar.gz
+pkgurl=https://xcb.freedesktop.org/dist/${pkgfn}
+
+download_md5 $pkgfn $pkgurl 207fb5e14088ed0241721bf9fd571606
+
+mkdir -p ${DEVENVCURRENTROOT}/src
+pushd ${DEVENVCURRENTROOT}/src > /dev/null
+  tar xf ${DEVENVDLROOT}/$pkgfn
+popd > /dev/null
+
+cfgcmd=("./configure")
+cfgcmd+=("--prefix=${DEVENVPREFIX}")
+
+pushd ${DEVENVCURRENTROOT}/src/${pkgfull} > /dev/null
+
+  buildcmd configure.log "${cfgcmd[@]}"
+  buildcmd make.log make -j ${NP}
+  buildcmd install.log make install
+
+popd > /dev/null
+
+pkgname=xcb-util-image
+pkgver=${VERSION:-0.4.1}
+pkgfull=$pkgname-$pkgver
+pkgfn=$pkgfull.tar.gz
+pkgurl=https://xcb.freedesktop.org/dist/${pkgfn}
+
+download_md5 $pkgfn $pkgurl 753f550248dd29c5d8797681d3df52ee
+
+mkdir -p ${DEVENVCURRENTROOT}/src
+pushd ${DEVENVCURRENTROOT}/src > /dev/null
+  tar xf ${DEVENVDLROOT}/$pkgfn
+popd > /dev/null
+
+cfgcmd=("./configure")
+cfgcmd+=("--prefix=${DEVENVPREFIX}")
+
+pushd ${DEVENVCURRENTROOT}/src/${pkgfull} > /dev/null
+
+  buildcmd configure.log "${cfgcmd[@]}"
+  buildcmd make.log make -j ${NP}
+  buildcmd install.log make install
+
+popd > /dev/null
+
+pkgname=xcb-util-renderutil
+pkgver=${VERSION:-0.3.10}
+pkgfull=$pkgname-$pkgver
+pkgfn=$pkgfull.tar.gz
+pkgurl=https://xcb.freedesktop.org/dist/${pkgfn}
+
+download_md5 $pkgfn $pkgurl 7c6de39307be714b88fd47c230253149
+
+mkdir -p ${DEVENVCURRENTROOT}/src
+pushd ${DEVENVCURRENTROOT}/src > /dev/null
+  tar xf ${DEVENVDLROOT}/$pkgfn
+popd > /dev/null
+
+cfgcmd=("./configure")
+cfgcmd+=("--prefix=${DEVENVPREFIX}")
+
+pushd ${DEVENVCURRENTROOT}/src/${pkgfull} > /dev/null
+
+  buildcmd configure.log "${cfgcmd[@]}"
+  buildcmd make.log make -j ${NP}
+  buildcmd install.log make install
+
+popd > /dev/null
+
+pkgname=xcb-util-cursor
+pkgver=${VERSION:-0.1.4}
+pkgfull=$pkgname-$pkgver
+pkgfn=$pkgfull.tar.gz
+pkgurl=https://xcb.freedesktop.org/dist/${pkgfn}
+
+download_md5 $pkgfn $pkgurl d8f2af704ed3eb0930c5c3bdc300a60c
+
+mkdir -p ${DEVENVCURRENTROOT}/src
+pushd ${DEVENVCURRENTROOT}/src > /dev/null
+  tar xf ${DEVENVDLROOT}/$pkgfn
+popd > /dev/null
+
+cfgcmd=("./configure")
+cfgcmd+=("--prefix=${DEVENVPREFIX}")
+
+pushd ${DEVENVCURRENTROOT}/src/${pkgfull} > /dev/null
+
+  buildcmd configure.log "${cfgcmd[@]}"
+  buildcmd make.log make -j ${NP}
+  buildcmd install.log make install
+
+popd > /dev/null
+
+pkgname=xcb-util-wm
+pkgver=${VERSION:-0.4.2}
+pkgfull=$pkgname-$pkgver
+pkgfn=$pkgfull.tar.gz
+pkgurl=https://xcb.freedesktop.org/dist/${pkgfn}
+
+download_md5 $pkgfn $pkgurl 5e5a0cbf8f6922ae8d1371ffb76e7a8a
+
+mkdir -p ${DEVENVCURRENTROOT}/src
+pushd ${DEVENVCURRENTROOT}/src > /dev/null
+  tar xf ${DEVENVDLROOT}/$pkgfn
+popd > /dev/null
+
+cfgcmd=("./configure")
+cfgcmd+=("--prefix=${DEVENVPREFIX}")
+
+pushd ${DEVENVCURRENTROOT}/src/${pkgfull} > /dev/null
+
+  buildcmd configure.log "${cfgcmd[@]}"
+  buildcmd make.log make -j ${NP}
+  buildcmd install.log make install
+
+popd > /dev/null
+
+pkgname=xcb-util-keysyms
+pkgver=${VERSION:-0.4.1}
+pkgfull=$pkgname-$pkgver
+pkgfn=$pkgfull.tar.gz
+pkgurl=https://xcb.freedesktop.org/dist/${pkgfn}
+
+download_md5 $pkgfn $pkgurl 809d7ef0a7a10e7b4199c02d5bf885ee
+
+mkdir -p ${DEVENVCURRENTROOT}/src
+pushd ${DEVENVCURRENTROOT}/src > /dev/null
+  tar xf ${DEVENVDLROOT}/$pkgfn
+popd > /dev/null
+
+cfgcmd=("./configure")
+cfgcmd+=("--prefix=${DEVENVPREFIX}")
+
+pushd ${DEVENVCURRENTROOT}/src/${pkgfull} > /dev/null
+
+  buildcmd configure.log "${cfgcmd[@]}"
+  buildcmd make.log make -j ${NP}
+  buildcmd install.log make install
+
+popd > /dev/null
+
+# vim: set et nobomb ft=bash ff=unix fenc=utf8:
