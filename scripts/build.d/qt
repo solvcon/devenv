@@ -2,14 +2,18 @@
 #
 # Usage: devenv build qt
 #
-# extracting qt source code in HOME is very slow on NCHC machine,
-# to use other src path: QTSRC=/path/to/src devenv build qt.
-# for example: QTSRC=/tmp devenv build qt
+# 1. extracting qt source code in HOME is very slow on NCHC machine,
+#    to use other src path: QTSRC=/path/to/src devenv build qt.
+#    for example: QTSRC=/tmp devenv build qt
+#
+# 2. extraction is set by default,
+#    to skip extract: SKIPEXTRACT=1 devenv build qt
 #
 
 set -e
 
 QTSRC=${QTSRC:-${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src}
+SKIPEXTRACT=${SKIPEXTRACT:-0}
 
 if [ -z "${SYNCGIT}" ]; then
   pkgname=qt
@@ -26,7 +30,7 @@ if [ -z "${SYNCGIT}" ]; then
   download_md5 $pkgfn $pkgurl $pkgmd5
 
   mkdir -p ${QTSRC}
-  if [ -d ${QTSRC}/$pkgfull ];
+  if [ -d ${QTSRC}/$pkgfull ] && [ ${SKIPEXTRACT} -eq 1 ];
   then
     echo "QTSRC: ${QTSRC}/$pkgfull already exist, skip extract"
   else
