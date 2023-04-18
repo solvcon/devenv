@@ -99,11 +99,23 @@ EOF
     exit
   fi
 
-  buildcmd install.log ${PYTHON} setup.py install \
-    --qtpaths=${QTPATHS} \
-    --ignore-git \
-    --reuse-build
+  install_cmd=("${PYTHON}")
+  install_cmd+=("setup.py")
+  install_cmd+=("install")
 
+  # Ninja build will casue OOM during install
+  # stage on Archlinux, therefore using GNU Make
+  # instead of Ninja build to prevent OOM.
+  if [ $(uname) == Linux ]; then
+    install_cmd+=("--make-spec=make")
+    install_cmd+=("--parallel=${NP}")
+  fi
+
+  install_cmd+=("--qtpaths=${QTPATHS}")
+  install_cmd+=("--ignore-git")
+  install_cmd+=("--reuse-build")
+
+  buildcmd install.log "${install_cmd[@]}"
 popd > /dev/null
 
 # vim: set et nobomb ft=bash ff=unix fenc=utf8:
