@@ -24,6 +24,12 @@ test_display_e() {
   assertEquals "${expected_return_code}" "${actual_return_code}"
 }
 
+test_get_list_type() {
+  expected="get_list is a function"
+  actual=$(type get_list | grep "is a")
+  assertEquals "${expected}" "${actual}"
+}
+
 test_get_cmd_list() {
   expected=$(echo `${LS_PATH} -1 ../scripts/cmd.d/`)
   actual=$(get_list cmd)
