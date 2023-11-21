@@ -18,9 +18,9 @@ SKIPEXTRACT=${SKIPEXTRACT:-0}
 if [ -z "${SYNCGIT}" ]; then
   pkgname=qt
   pkgmajorver=${MAJOR_VER:-6.5}
-  pkgsubver=${SUB_VER:-0}
+  pkgsubver=${SUB_VER:-3}
   pkgver=$pkgmajorver.$pkgsubver
-  pkgmd5=${MD5:-10247444e4264ea9cee7d4a7c13efd34}
+  pkgmd5=${MD5:-755db0527410df135609b51defa1a689}
   pkgfull=$pkgname-$pkgver
   pkgfoler=qt-everywhere-src-$pkgver
 
@@ -41,7 +41,7 @@ if [ -z "${SYNCGIT}" ]; then
   fi
 else
   pkgname=qt
-  pkgbranch=${VERSION:-6.5.0}
+  pkgbranch=${VERSION:-6.5.3}
   pkgfull=$pkgname-$pkgbranch
   # qt5 is expected here, it seems qt did not change its repository name from qt5 to qt6
   # ref : https://wiki.qt.io/Building_Qt_6_from_Git#Getting_the_source_code
