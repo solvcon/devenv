@@ -16,12 +16,12 @@ get_pip() {
 if [ "${SRCSYNC}" == "tarball" ] ; then
 
   pkgname=Python
-  pkgver=${VERSION:-3.11.1}
+  pkgver=${VERSION:-3.11.6}
   pkgfull=${pkgname}-${pkgver}
   pkgfn=${pkgfull}.tar.xz
   pkgurl=https://www.python.org/ftp/python/${pkgver}/${pkgfn}
 
-  download_md5 $pkgfn $pkgurl 4efe92adf28875c77d3b9b2e8d3bc44a
+  download_md5 $pkgfn $pkgurl d0c5a1a31efe879723e51addf56dd206
 
   mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
   pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src > /dev/null
@@ -57,7 +57,7 @@ pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
     sed -i -e "s/@OSX_ARCH@/${ARCH}/g" Lib/distutils/unixccompiler.py
   elif [ $(uname) == Linux ]; then
     export CPPFLAGS="-I${PREFIX}/include ${CPPFLAGS}"
-    export LDFLAGS="-L${PREFIX}/lib -Wl,-rpath=${PREFIX}/lib,--no-as-needed"
+    export LDFLAGS="-Wl,--no-as-needed -Wl,-rpath,${PREFIX}/lib -Wl,-rpath,${PREFIX}/lib64 -L${PREFIX}/lib -L${PREFIX}/lib64"
   fi
 
   cfgcmd=("./configure")

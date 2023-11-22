@@ -53,7 +53,7 @@ fi
 
 PYTHON=${DEVENVPREFIX}/bin/python3
 
-LLVM_INSTALL_DIR=$(command -v llvm-config --prefix || echo "")
+LLVM_INSTALL_DIR=${LLVM_INSTALL_DIR:-$(command -v llvm-config --prefix)}
 if [ -z "${LLVM_INSTALL_DIR}" ] ; then
   # set LLVM_INSTALL_DIR to select the libclang installation for shiboken.
   # For example, a brew installed libclang may be specified with:
@@ -109,7 +109,8 @@ EOF
   # stage on Archlinux, therefore using GNU Make
   # instead of Ninja build to prevent OOM.
   if [ $(uname) == Linux ]; then
-    install_cmd+=("--make-spec=make")
+    MAKESPEC=${MAKESPEC:-make}
+    install_cmd+=("--make-spec=${MAKESPEC}")
     install_cmd+=("--parallel=${NP}")
   fi
 
