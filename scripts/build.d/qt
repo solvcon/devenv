@@ -112,6 +112,7 @@ pushd ${QTSRC}/${pkgfull}/build
   #cfgcmd+=("-DINPUT_bundled_xcb_xinput=yes")
   #cfgcmd+=("-DINPUT_xkbcommon=yes")
   #cfgcmd+=("-DINPUT_sessionmanager=yes")
+  cfgcmd+=("-DQT_ALLOW_SYMLINK_IN_PATHS=ON")
   cfgcmd+=("-DCMAKE_PREFIX_PATH=${DEVENVPREFIX}")
   cfgcmd+=("-G Ninja")
   cfgcmd+=("..")
