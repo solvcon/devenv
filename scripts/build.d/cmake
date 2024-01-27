@@ -13,7 +13,6 @@ if [ "${SRCSYNC}" == "tarball" ] ; then
   pkgfn=${pkgfull}.tar.gz
   pkgurl=https://github.com/Kitware/CMake/releases/download/v${pkgver}/${pkgfn}
 
-  #download_md5 $pkgfn $pkgurl 521a03b1c36412463eda0348bebf4765
   download_md5 $pkgfn $pkgurl d8c5c2a764229f61a4ed1e06498a6031
 
   mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
