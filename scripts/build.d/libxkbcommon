@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+set -e
+
+pkgname=libxkbcommon
+pkgver=${VERSION:-1.5.0}
+pkgfull=$pkgname-$pkgver
+pkgfn=$pkgfull.tar.xz
+pkgurl=https://xkbcommon.org/download/${pkgfn}
+
+download_md5 $pkgfn $pkgurl 40f0486b4eb491928ec6616c2ff85120
+
+mkdir -p ${DEVENVCURRENTROOT}/src
+pushd ${DEVENVCURRENTROOT}/src > /dev/null
+  tar xf ${DEVENVDLROOT}/$pkgfn
+popd > /dev/null
+
+cfgcmd=("meson")
+cfgcmd+=("setup")
+cfgcmd+=("build")
+cfgcmd+=("--prefix=${DEVENVPREFIX}")
+cfgcmd+=("-Denable-wayland=false")
+
+pushd ${DEVENVCURRENTROOT}/src/${pkgfull} > /dev/null
+
+  buildcmd configure.log "${cfgcmd[@]}"
+  buildcmd make.log ninja -C build
+  buildcmd test.log ninja -C build test
+  buildcmd install.log ninja -C build install
+
+popd > /dev/null
+
+# vim: set et nobomb ft=bash ff=unix fenc=utf8:

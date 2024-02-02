@@ -2,6 +2,8 @@
 
 if [ -z $1 ]; then
   devenv_display -e "must need an argument!!"
+elif [ ! -d "${DEVENVFLAVORROOT}/$1" ]; then
+  devenv_display "'$1' dev environment doesn't exist!"
 else
   rm -rf ${DEVENVFLAVORROOT}/$1
   devenv_display "removing '$1' dev environment"

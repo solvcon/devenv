@@ -3,52 +3,69 @@ export DEVENVROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 . ${DEVENVROOT}/scripts/env.d/vars
 
 devenv() {
-  . ${DEVENVROOT}/scripts/func.d/bash_utils
   . ${DEVENVROOT}/scripts/env.d/devenv_impl
+  case "$1" in
+    "")
+      # create subshell to isolate name space
+      (
+        . ${DEVENVROOT}/scripts/func.d/bash_utils
+        if [ -z "${DEVENVFLAVOR}" ] ; then
+          devenv_display "no active flavor: \$DEVENVFLAVOR not defined"
+        else
+          devenv_display "'${DEVENVFLAVOR}' is active: ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}"
+        fi
+        devenv_display ""
+        ${DEVENVROOT}/bin/devenv help
+      )
+      ;;
+    use)
+      shift
+      # create subshell to isolate name space
+      (
+        . ${DEVENVROOT}/scripts/func.d/bash_utils
+        if [ ! -d "${DEVENVFLAVORROOT}/$1" ]; then
+          devenv_display "flavor $1 is not available"
+          return
+        fi
+      )
+      # cmd use need to manipulate current session's env variables
+      # therefore subshell is not working here
+      if [ ! -z "${DEVENVFLAVOR}" ] ; then
+        devenv_act devenv_nameremove ${DEVENVFLAVOR}
+      fi
 
-  if [[ "$1" == "" ]]; then
-    if [ -z "${DEVENVFLAVOR}" ] ; then
-      devenv_display "no active flavor: \$DEVENVFLAVOR not defined"
-    else
-      devenv_display "'${DEVENVFLAVOR}' is active: ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}"
-    fi
-    devenv_display ""
-    ${DEVENVROOT}/bin/devenv help
-  elif [[ "$1" == "use" ]]; then
-    shift
+      devenv_act devenv_namemunge $1
+      export DEVENVCURRENTROOT=${DEVENVFLAVORROOT}/${DEVENVFLAVOR}
+      echo "now using '${DEVENVFLAVOR}'"
+      ;;
+    off)
+      # create subshell to isolate name space
+      (
+        . ${DEVENVROOT}/scripts/func.d/bash_utils
+        if [ -z "${DEVENVFLAVOR}" ] ; then
+          devenv_display "\$DEVENVFLAVOR not defined"
+          return
+        fi
 
-    if [ ! -d "${DEVENVFLAVORROOT}/$1" ]; then
-      devenv_display "flavor $1 is not available"
-      return
-    fi
+        devenv_display "the flavor '${DEVENVFLAVOR}' to be turned off"
+      )
 
-    if [ ! -z "${DEVENVFLAVOR}" ] ; then
-      devenv_act nameremove ${DEVENVFLAVOR}
-    fi
-
-    devenv_act namemunge $1
-    export DEVENVCURRENTROOT=${DEVENVFLAVORROOT}/${DEVENVFLAVOR}
-    echo "now using '${DEVENVFLAVOR}'"
-  elif [[ "$1" == "off" ]]; then
-    if [ -z "${DEVENVFLAVOR}" ] ; then
-      devenv_display "\$DEVENVFLAVOR not defined"
-      return
-    fi
-
-    devenv_display "the flavor '${DEVENVFLAVOR}' to be turned off"
-    devenv_act nameremove ${DEVENVFLAVOR}
-    export DEVENVCURRENTROOT="/dev/null"
-  elif [[ "$1" == "help" ]]; then
-    ${DEVENVROOT}/bin/devenv "$@"
-  else
-    ${DEVENVROOT}/bin/devenv "$@"
-  fi
+      devenv_act devenv_nameremove ${DEVENVFLAVOR}
+      export DEVENVCURRENTROOT="/dev/null"
+      ;;
+    *)
+      ${DEVENVROOT}/bin/devenv "$@"
+      ;;
+  esac
+  # unset devenv internal functions
+  unset -f devenv_nameremove
+  unset -f devenv_namemunge
+  unset -f devenv_act
 }
 
 _devenv() {
-  . ${DEVENVROOT}/scripts/func.d/bash_utils
 
-  local cur prev opts base
+  local cur prev opts base cmd cmds flavors builds applications
   COMPREPLY=()
   cur="${COMP_WORDS[COMP_CWORD]}"
   base="${COMP_WORDS[0]}"
@@ -57,22 +74,43 @@ _devenv() {
   case "${cmd}" in
     use|del)
       [[ $COMP_CWORD > 2 ]] && return 1
-      COMPREPLY=( $(compgen -W "$(get_list flavor)" -- ${cur}) )
+      flavors=$(
+        . ${DEVENVROOT}/scripts/func.d/bash_utils
+        get_list flavor
+      )
+      COMPREPLY=(
+        $(compgen -W "${flavors}" -- ${cur})
+      )
       return 0
       ;;
     build)
       [[ $COMP_CWORD > 2 ]] && return 1
-      COMPREPLY=( $(compgen -W "$(get_list build)" -- ${cur}) )
+      builds=$(
+        . ${DEVENVROOT}/scripts/func.d/bash_utils
+        get_list build
+      )
+      COMPREPLY=(
+        $(compgen -W "${builds}" -- ${cur})
+      )
       return 0
       ;;
     launch)
       [[ $COMP_CWORD > 2 ]] && return 1
-      COMPREPLY=( $(compgen -W "$(get_list application)" -- ${cur}) )
+      applications=$(
+        . ${DEVENVROOT}/scripts/func.d/bash_utils
+        get_list application
+      )
+      COMPREPLY=(
+        $(compgen -W "${applications}" -- ${cur})
+      )
       return 0
       ;;
     *)
       [[ $COMP_CWORD > 1 ]] && return 1
-      cmds=$(get_list cmd)
+      cmds=$(
+        . ${DEVENVROOT}/scripts/func.d/bash_utils
+        get_list cmd
+      )
       cmds+=" use off"
       COMPREPLY=($(compgen -W "${cmds}" -- ${cur}))
       return 0

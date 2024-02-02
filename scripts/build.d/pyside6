@@ -53,6 +53,7 @@ fi
 
 PYTHON=${DEVENVPREFIX}/bin/python3
 
+LLVM_INSTALL_DIR=${LLVM_INSTALL_DIR:-$(command -v llvm-config --prefix)}
 if [ -z "${LLVM_INSTALL_DIR}" ] ; then
   # set LLVM_INSTALL_DIR to select the libclang installation for shiboken.
   # For example, a brew installed libclang may be specified with:
@@ -60,6 +61,7 @@ if [ -z "${LLVM_INSTALL_DIR}" ] ; then
   echo "\${LLVM_INSTALL_DIR} is not set, shiboken might not find libclang"
 fi
 
+QTPATHS=$(which qtpaths)
 if [ -z "${QTPATHS}" ] ; then
   # A locally installed qt might be specified with:
   # export QTPATHS=${HOME}/opt/qt/6.2.3/macos/bin/qtpaths
@@ -99,11 +101,24 @@ EOF
     exit
   fi
 
-  buildcmd install.log ${PYTHON} setup.py install \
-    --qtpaths=${QTPATHS} \
-    --ignore-git \
-    --reuse-build
+  install_cmd=("${PYTHON}")
+  install_cmd+=("setup.py")
+  install_cmd+=("install")
 
+  # Ninja build will casue OOM during install
+  # stage on Archlinux, therefore using GNU Make
+  # instead of Ninja build to prevent OOM.
+  if [ $(uname) == Linux ]; then
+    MAKESPEC=${MAKESPEC:-make}
+    install_cmd+=("--make-spec=${MAKESPEC}")
+    install_cmd+=("--parallel=${NP}")
+  fi
+
+  install_cmd+=("--qtpaths=${QTPATHS}")
+  install_cmd+=("--ignore-git")
+  install_cmd+=("--reuse-build")
+
+  buildcmd install.log "${install_cmd[@]}"
 popd > /dev/null
 
 # vim: set et nobomb ft=bash ff=unix fenc=utf8:
