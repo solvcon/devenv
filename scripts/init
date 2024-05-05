@@ -20,23 +20,22 @@ devenv() {
       ;;
     use)
       shift
-      # create subshell to isolate name space
-      (
-        . ${DEVENVROOT}/scripts/func.d/bash_utils
-        if [ ! -d "${DEVENVFLAVORROOT}/$1" ]; then
-          devenv_display "flavor $1 is not available"
-          return
+      if [ ! -d "${DEVENVFLAVORROOT}/$1" ]; then
+        # create subshell to isolate name space
+        (
+          . ${DEVENVROOT}/scripts/func.d/bash_utils
+            devenv_display -e "flavor $1 is not available"
+        )
+      else
+        # cmd use need to manipulate current session's env variables
+        # therefore subshell is not working here
+        if [ ! -z "${DEVENVFLAVOR}" ] ; then
+          devenv_act devenv_nameremove ${DEVENVFLAVOR}
         fi
-      )
-      # cmd use need to manipulate current session's env variables
-      # therefore subshell is not working here
-      if [ ! -z "${DEVENVFLAVOR}" ] ; then
-        devenv_act devenv_nameremove ${DEVENVFLAVOR}
+        devenv_act devenv_namemunge $1
+        export DEVENVCURRENTROOT=${DEVENVFLAVORROOT}/${DEVENVFLAVOR}
+        echo "now using '${DEVENVFLAVOR}'"
       fi
-
-      devenv_act devenv_namemunge $1
-      export DEVENVCURRENTROOT=${DEVENVFLAVORROOT}/${DEVENVFLAVOR}
-      echo "now using '${DEVENVFLAVOR}'"
       ;;
     off)
       # create subshell to isolate name space
