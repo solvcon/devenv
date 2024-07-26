@@ -7,12 +7,12 @@ SRCSYNC=${SRCSYNC:-tarball}
 if [ "${SRCSYNC}" == "tarball" ] ; then
 
   pkgname=pybind11
-  pkgver=${VERSION:-2.10.2}
+  pkgver=${VERSION:-2.12.0}
   pkgfull=${pkgname}-${pkgver}
   pkgfn=${pkgfull}.tar.gz
   pkgurl=https://github.com/pybind/pybind11/archive/refs/tags/v${pkgver}.tar.gz
 
-  download_md5 $pkgfn $pkgurl 695df9e99d92cdaa7fd0449fc5f30c26
+  download_md5 $pkgfn $pkgurl 891fb7337c45134f18a3eb4d7f6eca25
 
   mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
   pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src > /dev/null
