@@ -7,7 +7,7 @@ SRCSYNC=${SRCSYNC:-tarball}
 if [ "${SRCSYNC}" == "tarball" ] ; then
 
   pkgname=pybind11
-  pkgver=${VERSION:-2.10.2}
+  pkgver=${VERSION:-2.12.0}
   pkgfull=${pkgname}-${pkgver}
   pkgfn=${pkgfull}.tar.gz
   pkgurl=https://github.com/pybind/pybind11/archive/refs/tags/v${pkgver}.tar.gz
