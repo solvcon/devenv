@@ -17,10 +17,10 @@ SKIPEXTRACT=${SKIPEXTRACT:-0}
 
 if [ -z "${SYNCGIT}" ]; then
   pkgname=qt
-  pkgmajorver=${MAJOR_VER:-6.5}
+  pkgmajorver=${MAJOR_VER:-6.6}
   pkgsubver=${SUB_VER:-3}
   pkgver=$pkgmajorver.$pkgsubver
-  pkgmd5=${MD5:-755db0527410df135609b51defa1a689}
+  pkgmd5=${MD5:-0e2c9dd87cbc6768da2bfc7f776c272f}
   pkgfull=$pkgname-$pkgver
   pkgfoler=qt-everywhere-src-$pkgver
 
