@@ -73,7 +73,7 @@ pushd ${QTSRC}/${pkgfull}/build
   #cfgcmd+=("-DBUILD_qtlanguageserver=OFF")
   #cfgcmd+=("-DBUILD_qtsvg=OFF")
   cfgcmd+=("-DBUILD_qtquicktimeline=OFF")
-  cfgcmd+=("-DBUILD_qtquick3d=OFF")
+  #cfgcmd+=("-DBUILD_qtquick3d=OFF")
   cfgcmd+=("-DBUILD_qt5compat=OFF")
   cfgcmd+=("-DBUILD_qtactiveqt=OFF")
   cfgcmd+=("-DBUILD_qtcharts=OFF")
