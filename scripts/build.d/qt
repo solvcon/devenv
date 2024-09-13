@@ -41,7 +41,7 @@ if [ -z "${SYNCGIT}" ]; then
   fi
 else
   pkgname=qt
-  pkgbranch=${VERSION:-6.5.3}
+  pkgbranch=${VERSION:-6.6.3}
   pkgfull=$pkgname-$pkgbranch
   # qt5 is expected here, it seems qt did not change its repository name from qt5 to qt6
   # ref : https://wiki.qt.io/Building_Qt_6_from_Git#Getting_the_source_code
