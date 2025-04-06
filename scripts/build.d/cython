@@ -6,13 +6,14 @@ SRCSYNC=${SRCSYNC:-tarball}
 
 if [ "${SRCSYNC}" == "tarball" ] ; then
 
+  # Tarball location: https://github.com/cython/cython/releases
   pkgname=Cython
-  pkgver=${VERSION:-0.29.32}
+  pkgver=${VERSION:-3.0.12}
   pkgfull=${pkgname}-${pkgver}
   pkgfn=${pkgfull}.tar.gz
-  pkgurl=https://files.pythonhosted.org/packages/4c/76/1e41fbb365ad20b6efab2e61b0f4751518444c953b390f9b2d36cf97eea0/${pkgfn}
+  pkgurl=https://github.com/cython/cython/archive/refs/tags/${pkgver}.tar.gz
 
-  download_md5 $pkgfn $pkgurl 91c36ea86c00adcc5c1c11cf48b733c0
+  download_md5 $pkgfn $pkgurl 194658f8ae1ae8804f864d4e147fddf6
 
   mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
   pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
@@ -33,6 +34,13 @@ else
   devenv_display -e "Invalid \${SRCSYNC} ${SRCSYNC}"
   exit
 
+fi
+
+if [ "${DEVENV_DLONLY}" == "1" ] ; then
+  echo "\${DEVENV_DLONLY}=1 ; existing"
+  exit 1
+else
+  echo "if you want to exit after downloading: export \${DEVENV_DLONLY}=1"
 fi
 
 # build.
