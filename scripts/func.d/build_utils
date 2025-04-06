@@ -13,14 +13,16 @@ download_md5 () {
   elif [ $(uname) == Linux ] ; then
     local md5=md5sum
   fi
-  if [ ! -e $loc ] || [ $md5hash != `$md5 $loc | cut -d ' ' -f 1` ] ; then
+  local md5hash_calc=$($md5 $loc | cut -d ' ' -f 1)
+  echo "$(basename $loc) md5 $md5hash (archived)"
+  echo "$(basename $loc) md5 $md5hash_calc (calculated)"
+  if [ ! -e $loc ] || [ "$md5hash" != "$md5hash_calc" ] ; then
     mkdir -p $(dirname $loc)
     rm -f $loc
     echo "Download from $url"
     curl -sSL ${CURLARGS} -o $loc $url
   fi
-  local md5hash_calc=`$md5 $loc | cut -d ' ' -f 1`
-  if [ $md5hash != $md5hash_calc ] ; then
+  if [ "$md5hash" != "$md5hash_calc" ] ; then
     echo "$(basename $loc) md5 hash $md5hash but got $md5hash_calc"
   else
     echo "$(basename $loc) md5 hash $md5hash confirmed"

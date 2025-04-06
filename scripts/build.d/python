@@ -16,12 +16,12 @@ get_pip() {
 if [ "${SRCSYNC}" == "tarball" ] ; then
 
   pkgname=Python
-  pkgver=${VERSION:-3.11.6}
+  pkgver=${VERSION:-3.13.2}
   pkgfull=${pkgname}-${pkgver}
   pkgfn=${pkgfull}.tar.xz
   pkgurl=https://www.python.org/ftp/python/${pkgver}/${pkgfn}
 
-  download_md5 $pkgfn $pkgurl d0c5a1a31efe879723e51addf56dd206
+  download_md5 $pkgfn $pkgurl 4c2d9202ab4db02c9d0999b14655dfe5
 
   mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
   pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src > /dev/null
@@ -44,6 +44,13 @@ else
 
 fi
 
+if [ "${DEVENV_DLONLY}" == "1" ] ; then
+  echo "\${DEVENV_DLONLY}=1 ; existing"
+  exit 1
+else
+  echo "if you want to exit after downloading: export \${DEVENV_DLONLY}=1"
+fi
+
 # build.
 
 pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
@@ -54,7 +61,6 @@ pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
   if [ $(uname) == Darwin ]; then
     export CPPFLAGS="-I${PREFIX}/include ${CPPFLAGS}"
     export LDFLAGS="-Wl,-rpath,${PREFIX}/lib -L${PREFIX}/lib ${LDFLAGS}"
-    sed -i -e "s/@OSX_ARCH@/${ARCH}/g" Lib/distutils/unixccompiler.py
   elif [ $(uname) == Linux ]; then
     export CPPFLAGS="-I${PREFIX}/include ${CPPFLAGS}"
     export LDFLAGS="-Wl,--no-as-needed -Wl,-rpath,${PREFIX}/lib -Wl,-rpath,${PREFIX}/lib64 -L${PREFIX}/lib -L${PREFIX}/lib64"

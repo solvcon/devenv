@@ -7,11 +7,11 @@ SRCSYNC=${SRCSYNC:-tarball}
 if [ "${SRCSYNC}" == "tarball" ]; then
 
   pkgname=zlib
-  pkgver=${VERSION:-v1.2.13}
+  pkgver=${VERSION:-v1.3.1}
   pkgfull=${pkgname}-${pkgver:1}
   pkgfn=${pkgfull}.tar.gz
   pkgurl=https://github.com/madler/zlib/archive/refs/tags/${pkgver}.tar.gz
-  download_md5 ${pkgfn} ${pkgurl} 9c7d356c5acaa563555490676ca14d23
+  download_md5 ${pkgfn} ${pkgurl} ddb17dbbf2178807384e57ba0d81e6a1
 
   mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
   pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src > /dev/null
@@ -31,6 +31,13 @@ else
   devenv_display -e "Invalid \${SRCSYNC} ${SRCSYNC}"
   exit
 
+fi
+
+if [ "${DEVENV_DLONLY}" == "1" ] ; then
+  echo "\${DEVENV_DLONLY}=1 ; existing"
+  exit 1
+else
+  echo "if you want to exit after downloading: export \${DEVENV_DLONLY}=1"
 fi
 
 pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null

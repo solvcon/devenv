@@ -20,7 +20,7 @@ if [ -z "${SYNCGIT}" ]; then
   pkgmajorver=${MAJOR_VER:-6.8}
   pkgsubver=${SUB_VER:-1}
   pkgver=$pkgmajorver.$pkgsubver
-  pkgmd5=${MD5:--4068b07ca6366bcb9ba56508bbbf20e6}
+  pkgmd5=${MD5:-4068b07ca6366bcb9ba56508bbbf20e6}
   pkgfull=$pkgname-$pkgver
   pkgfoler=qt-everywhere-src-$pkgver
 
@@ -30,13 +30,14 @@ if [ -z "${SYNCGIT}" ]; then
   download_md5 $pkgfn $pkgurl $pkgmd5
 
   mkdir -p ${QTSRC}
-  if [ -d ${QTSRC}/$pkgfull ] && [ ${SKIPEXTRACT} -eq 1 ];
-  then
+  if [ -d ${QTSRC}/$pkgfull ] || [ ${SKIPEXTRACT} -eq 1 ]; then
     echo "QTSRC: ${QTSRC}/$pkgfull already exist, skip extract"
   else
     pushd ${QTSRC} > /dev/null
-    tar xf ${DEVENVDLROOT}/$pkgfn
-    mv $pkgfoler $pkgfull
+      echo "QTSRC: ${QTSRC}/$pkgfull extracting ..."
+      tar xf ${DEVENVDLROOT}/$pkgfn
+      mv $pkgfoler $pkgfull
+      echo "QTSRC: ${QTSRC}/$pkgfull extracted"
     popd
   fi
 else
@@ -48,13 +49,30 @@ else
   syncgit git://code.qt.io/qt qt5 ${pkgbranch} ${pkgfull}
 fi
 
+if [ "${DEVENV_DLONLY}" == "1" ] ; then
+  echo "\${DEVENV_DLONLY}=1 ; existing"
+  exit 1
+else
+  echo "if you want to exit after downloading: export \${DEVENV_DLONLY}=1"
+fi
+
 # remove symlink check
 # https://github.com/Homebrew/homebrew-core/blob/29bc842d5cdffde2917bce61a1d4eb742cf6d987/Formula/qt.rb#L133
 pushd ${QTSRC}/${pkgfull}
   git apply -v --directory qtbase ${DEVENVROOT}/var/patch/${pkgfull}.patch || true
 popd
 
-rm -rf ${QTSRC}/${pkgfull}/build # clean up previous build
+# build.
+
+if [ "${DVQT_NOCLEAN}" != "1" ] ; then
+  echo "Cleaning up build directory ${QTSRC}/${pkgfull}/build ..."
+  echo "Set \$DVQT_NOCLEAN=1 to skip cleaning up"
+  rm -rf ${QTSRC}/${pkgfull}/build # clean up previous build
+  echo "Cleaned up build directory ${QTSRC}/${pkgfull}/build"
+else
+  echo "No cleaning up build directory ${QTSRC}/${pkgfull}/build"
+fi
+
 mkdir -p ${QTSRC}/${pkgfull}/build
 pushd ${QTSRC}/${pkgfull}/build
   if [ -n "${SYNCGIT}" ]; then
@@ -73,7 +91,8 @@ pushd ${QTSRC}/${pkgfull}/build
   #cfgcmd+=("-DBUILD_qtlanguageserver=OFF")
   #cfgcmd+=("-DBUILD_qtsvg=OFF")
   cfgcmd+=("-DBUILD_qtquicktimeline=OFF")
-  #cfgcmd+=("-DBUILD_qtquick3d=OFF")
+  cfgcmd+=("-DBUILD_qtquick3d=OFF")  # I cannot get it built on macos 15.4 and Xcode 16.3
+  cfgcmd+=("-DBUILD_qtgraphs=OFF")  # depends on qtquick3d
   cfgcmd+=("-DBUILD_qt5compat=OFF")
   cfgcmd+=("-DBUILD_qtactiveqt=OFF")
   cfgcmd+=("-DBUILD_qtcharts=OFF")
@@ -126,9 +145,15 @@ pushd ${QTSRC}/${pkgfull}/build
   installcmd+=("--install")
   installcmd+=(".")
 
-  buildcmd configure.log "${cfgcmd[@]}"
-  buildcmd cmake.log "${cmakecmd[@]}"
-  buildcmd install.log "${installcmd[@]}"
+  if [ "${DVQT_NOCONFIG}" != "1" ] ; then
+    buildcmd configure.log "${cfgcmd[@]}"
+  fi
+  if [ "${DVQT_NOBUILD}" != "1" ] ; then
+    buildcmd build.log "${cmakecmd[@]}"
+  fi
+  if [ "${DVQT_NOINSTALL}" != "1" ] ; then
+    buildcmd install.log "${installcmd[@]}"
+  fi
 
 popd
 

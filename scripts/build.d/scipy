@@ -1,22 +1,22 @@
 #!/usr/bin/env bash
 
-# Building document: https://numpy.org/doc/stable/building/index.html
+# Building document: https://docs.scipy.org/doc/scipy/building/index.html
 
 set -e
 
 SRCSYNC=${SRCSYNC:-tarball}
 
-pkgname=numpy
+pkgname=scipy
 
 if [ "${SRCSYNC}" == "tarball" ] ; then
 
-  # Tarball location: https://github.com/numpy/numpy/releases
-  pkgver=${VERSION:-2.2.4}
+  # Tarball location: https://github.com/scipy/scipy/releases
+  pkgver=${VERSION:-1.15.2}
   pkgfull=${pkgname}-${pkgver}
   pkgfn=${pkgfull}.tar.gz
   pkgurl=https://github.com/${pkgname}/${pkgname}/releases/download/v${pkgver}/${pkgfn}
 
-  download_md5 $pkgfn $pkgurl 56232f4a69b03dd7a87a55fffc5f2ebc
+  download_md5 $pkgfn $pkgurl 515fc1544d7617b38fe5a9328538047b
 
   mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
   pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src > /dev/null
@@ -65,44 +65,18 @@ PYTHON=${DEVENVPREFIX}/bin/python3
 rm -f site.cfg
 
 if [ $(uname) == Darwin ] ; then
-  NPY_BLAS_ORDER=Accelerate
-  echo "Darwin"
-  cat >> site.cfg << EOF
-[accelerate]
-libraries = Accelerate, vecLib
-EOF
-elif [ $(uname) == Linux ] ; then
-  BLAS=${BLAS:-mkl}
-  if [ ${BLAS} == mkl ] ; then
-    NPY_BLAS_ORDER=MKL
-  else
-    NPY_BLAS_ORDER=openblas
-  cat >> site.cfg << EOF
-[openblas]
-libraries = openblas
-library_dirs = ${DEVENVPREFIX}/lib:/usr/local/lib:/usr/lib
-include_dirs = ${DEVENVPREFIX}/include/openblas:/usr/local/include/openblas:/usr/include/openblas
-runtime_library_dirs = ${DEVENVPREFIX}/lib
-EOF
-  fi
+  # SciPy does not yet support accelerate on macos
+  openblaspath="/opt/homebrew/opt/openblas"
+  export PKG_CONFIG_PATH="${openblaspath}/lib/pkgconfig"
+  # Xcode clang does not support -fopenmp
+  llvmpath="/opt/homebrew/opt/llvm"
+  export CC="${llvmpath}/bin/clang"
+  export CXX="${llvmpath}/bin/clang++"
+  export LDFLAGS="-L${llvmpath}/lib"
+  export CPPFLAGS="-I${llvmpath}/include"
 fi
 
 export NPY_BLAS_ORDER
-
-rm -f setup.cfg
-cat >> setup.cfg << EOF
-# See the docstring in versioneer.py for instructions. Note that you must
-# re-run 'versioneer.py setup' after changing this section, and commit the
-# resulting files.
-
-[versioneer]
-VCS = git
-style = pep440
-versionfile_source = numpy/_version.py
-versionfile_build = numpy/_version.py
-tag_prefix = v
-parentdir_prefix = numpy-
-EOF
 
 if [ -z "${NOFORTRAN}" ] ; then
 cat >> setup.cfg << EOF
@@ -112,16 +86,12 @@ fcompiler = gfortran
 EOF
 fi
 
-buildcmd dependency.log pip3 install -r requirements/build_requirements.txt
-buildcmd build.log spin build -j ${NP}
+buildcmd dependency.log pip3 install -r requirements/dev.txt
+buildcmd build.log ${PYTHON} dev.py build -j ${NP}
 buildcmd install.log pip3 install .
-# Use -e . --no-build-isolation when hacking numpy
+# Use -e . --no-build-isolation when hacking scipy
 #buildcmd install.log pip3 install -e . --no-build-isolation
 
 popd > /dev/null
-
-# Check lapack version.
-echo "Check lapack version ..."
-${PYTHON} -c "import numpy as np ; np.show_config()"
 
 # vim: set et nobomb ft=bash ff=unix fenc=utf8:

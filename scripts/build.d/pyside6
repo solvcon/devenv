@@ -26,8 +26,9 @@ if [ "${SRCSYNC}" == "tarball" ] ; then
 
 elif [ "${SRCSYNC}" == "git" ] ; then
 
+  # PySide repository: https://code.qt.io/cgit/pyside/pyside-setup.git/
   pkgname=pyside-setup
-  pkgbranch=${VERSION:-dev}
+  pkgbranch=${VERSION:-v6.8.1}
   pkgfull=$pkgname
 
   # unpack (clone)
@@ -38,6 +39,13 @@ else
   devenv_display -e "Invalid \${SRCSYNC} ${SRCSYNC}"
   exit
 
+fi
+
+if [ "${DEVENV_DLONLY}" == "1" ] ; then
+  echo "\${DEVENV_DLONLY}=1 ; existing"
+  exit 1
+else
+  echo "if you want to exit after downloading: export \${DEVENV_DLONLY}=1"
 fi
 
 # build.
@@ -105,18 +113,21 @@ EOF
   install_cmd+=("setup.py")
   install_cmd+=("install")
 
+  install_cmd+=("--qtpaths=${QTPATHS}")
+  install_cmd+=("--ignore-git")
+  install_cmd+=("--no-qt-tools")
+  install_cmd+=("--parallel=${NP}")
+  if [ "${PYSIDE_REUSE_BUILD}" == "1" ] ; then
+    install_cmd+=("--reuse-build")
+  fi
+
   # Ninja build will casue OOM during install
   # stage on Archlinux, therefore using GNU Make
   # instead of Ninja build to prevent OOM.
   if [ $(uname) == Linux ]; then
     MAKESPEC=${MAKESPEC:-make}
     install_cmd+=("--make-spec=${MAKESPEC}")
-    install_cmd+=("--parallel=${NP}")
   fi
-
-  install_cmd+=("--qtpaths=${QTPATHS}")
-  install_cmd+=("--ignore-git")
-  install_cmd+=("--reuse-build")
 
   buildcmd install.log "${install_cmd[@]}"
 popd > /dev/null
