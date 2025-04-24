@@ -8,12 +8,12 @@ pkgname=cmake
 
 if [ "${SRCSYNC}" == "tarball" ] ; then
 
-  pkgver=${VERSION:-3.28.1}
+  pkgver=${VERSION:-4.0.1}
   pkgfull=${pkgname}-${pkgver}
   pkgfn=${pkgfull}.tar.gz
   pkgurl=https://github.com/Kitware/CMake/releases/download/v${pkgver}/${pkgfn}
 
-  download_md5 $pkgfn $pkgurl db659ed92a8fcc880f95b492bde2eb44
+  download_md5 $pkgfn $pkgurl 534b4af60e0b4b3fa43199d75d2debef
 
   mkdir -p ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src
   pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src > /dev/null
