@@ -28,7 +28,7 @@ elif [ "${SRCSYNC}" == "git" ] ; then
 
   # PySide repository: https://code.qt.io/cgit/pyside/pyside-setup.git/
   pkgname=pyside-setup
-  pkgbranch=${VERSION:-v6.8.1}
+  pkgbranch=${VERSION:-v6.9.2}
   pkgfull=$pkgname
 
   # unpack (clone)
@@ -114,8 +114,10 @@ EOF
   install_cmd+=("install")
 
   install_cmd+=("--qtpaths=${QTPATHS}")
+  install_cmd+=("--verbose-build")
   install_cmd+=("--ignore-git")
   install_cmd+=("--no-qt-tools")
+  install_cmd+=("--enable-numpy-support")
   install_cmd+=("--parallel=${NP}")
   if [ "${PYSIDE_REUSE_BUILD}" == "1" ] ; then
     install_cmd+=("--reuse-build")
