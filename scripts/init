@@ -1,4 +1,14 @@
-export DEVENVROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# zsh/bash compatible version
+if [ -n "$ZSH_VERSION" ]; then
+    # zsh
+    export DEVENVROOT="$(cd "$(dirname "${(%):-%x}")/.." && pwd)"
+elif [ -n "$BASH_VERSION" ]; then
+    # bash
+    export DEVENVROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+else
+    # fallback
+    export DEVENVROOT="$(cd "$(dirname "$0")/.." && pwd)"
+fi
 
 . ${DEVENVROOT}/scripts/env.d/vars
 
