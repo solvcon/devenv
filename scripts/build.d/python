@@ -73,7 +73,6 @@ pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
   cfgcmd+=("--enable-optimizations")
   cfgcmd+=("--without-ensurepip")
   cfgcmd+=("--with-system-expat")
-  cfgcmd+=("--with-system-ffi")
   cfgcmd+=("--with-system-libmpdec")
   cfgcmd+=("--with-readline=editline")
   cfgcmd+=("--with-lto")
@@ -82,6 +81,8 @@ pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
   if [[ $(uname) == Darwin ]] ; then
     cfgcmd+=("--with-dtrace")
     cfgcmd+=("--with-dbmliborder=ndbm")
+  elif [ $(uname) == Linux ]; then
+    cfgcmd+=("--with-system-ffi")
   fi
 
   # Some Python extension does not work properly without this, e.g., pandas.
