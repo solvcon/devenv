@@ -7,7 +7,7 @@ SRCSYNC=${SRCSYNC:-tarball}
 if [ "${SRCSYNC}" == "tarball" ] ; then
 
   # Tarball location: https://github.com/cython/cython/releases
-  pkgname=Cython
+  pkgname=cython
   pkgver=${VERSION:-3.0.12}
   pkgfull=${pkgname}-${pkgver}
   pkgfn=${pkgfull}.tar.gz

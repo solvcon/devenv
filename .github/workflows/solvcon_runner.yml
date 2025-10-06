@@ -24,6 +24,28 @@ jobs:
       if: matrix.os != 'macos-latest'
       run: |
         source ${DEVENV_WORKSPACE}/contrib/ci-setup-apt.sh
+    - name: Cache Homebrew downloads (macOS)
+      if: matrix.os == 'macos-latest'
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/Library/Caches/Homebrew
+          /usr/local/Homebrew
+        key: brew-${{ runner.os }}
+        restore-keys: |
+          brew-${{ runner.os }}-
+    - name: Dependency (macOS)
+      if: matrix.os == 'macos-latest'
+      run: |
+        brew update --quiet
+        brew install --cask mactex-no-gui
+        TEXBIN="/Library/TeX/texbin"
+        echo "PATH=${TEXBIN}:$PATH" >> $GITHUB_ENV
+        if [[ "$(uname -m)" == "arm64" ]]; then
+          echo "PYTHON_DECIMAL_WITH_MACHINE=uint128" >> $GITHUB_ENV
+        else
+          echo "PYTHON_DECIMAL_WITH_MACHINE=x64" >> $GITHUB_ENV
+        fi
     - name: Launch SOLVCON
       run: |
         source ${DEVENV_WORKSPACE}/scripts/init

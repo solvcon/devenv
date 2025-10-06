@@ -34,21 +34,35 @@ devenv build bzip2
 #     error: System version of SQLite does not support loadable extensions
 #     make: *** [sharedmods] Error 1
 devenv build sqlite
-VERSION=3.8 devenv build python
-devenv build cmake
+# pip>=25 requires virtualenv;
+#     disable via PIP_REQUIRE_VIRTUALENV=false
+export PIP_REQUIRE_VIRTUALENV=false
+VERSION=3.8.20 devenv build python
+VERSION=3.31.9 devenv build cmake
 # scotch will be used later by libmarch
 # cmake will be used for building scotch
 devenv build scotch
 
 # prepare all packages to build SOLVCON
+pip3 install "setuptools<60.0" wheel
 pip3 install nose boto paramiko netCDF4
+pip3 install sphinx furo Pillow
 pip3 install numpy==1.21.4
-devenv build pybind11
-devenv build gmsh
+VERSION=2.11.2 devenv build pybind11
+
 devenv build hdf
 
+if [[ "$(uname)" == "Darwin" ]]; then
+  CMAKE_C_FLAGS="-include unistd.h -include string.h" \
+  CFLAGS="-include unistd.h -include string.h" \
+  devenv build gmsh
+else
+  devenv build gmsh
+fi
+
+
 python_exe_base=$(which python3)
-PYTHON_EXE=${python_exe_base} devenv build cython
+VERSION=0.29.37 PYTHON_EXE=${python_exe_base} devenv build cython
 
 pushd ${SCSRC}
 # make libmarch.so and SOLVCON

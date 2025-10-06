@@ -73,7 +73,6 @@ pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
   cfgcmd+=("--enable-optimizations")
   cfgcmd+=("--without-ensurepip")
   cfgcmd+=("--with-system-expat")
-  cfgcmd+=("--with-system-ffi")
   cfgcmd+=("--with-system-libmpdec")
   cfgcmd+=("--with-readline=editline")
   cfgcmd+=("--with-lto")
@@ -82,6 +81,8 @@ pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
   if [[ $(uname) == Darwin ]] ; then
     cfgcmd+=("--with-dtrace")
     cfgcmd+=("--with-dbmliborder=ndbm")
+  elif [ $(uname) == Linux ]; then
+    cfgcmd+=("--with-system-ffi")
   fi
 
   # Some Python extension does not work properly without this, e.g., pandas.
@@ -103,11 +104,16 @@ pushd ${DEVENVFLAVORROOT}/${DEVENVFLAVOR}/src/${pkgfull} > /dev/null
   PY_BIN=${PREFIX}/bin/python3
   CURL_URL=https://bootstrap.pypa.io/get-pip.py
 
-  IFS='.' read -ra VER <<< ${VERSION}
+  IFS='.' read -ra VER <<< "${VERSION}"
 
-  if [[ ${VER[0]} == "v2" ]]; then
+  if [[ "${VER[0]}" == "v2" || "${VER[0]}" == "2" ]]; then
     PY_BIN=${PREFIX}/bin/python
     CURL_URL=https://bootstrap.pypa.io/pip/2.7/get-pip.py
+  elif (( "${VER[0]}" == 3 && "${VER[1]}" < 6 )); then
+    echo "ERROR: Python ${pkgver} is below 3.6. get-pip is not supported."
+    exit 1
+  elif (( "${VER[0]}" == 3 && "${VER[1]}" < 9 )); then
+    CURL_URL="https://bootstrap.pypa.io/pip/${VER[0]}.${VER[1]}/get-pip.py"
   fi
 
   curl ${CURL_URL} | ${PY_BIN}
