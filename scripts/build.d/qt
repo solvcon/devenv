@@ -25,7 +25,7 @@ if [ -z "${SYNCGIT}" ]; then
   pkgfoler=qt-everywhere-src-$pkgver
 
   pkgfn=$pkgfull.tar.xz
-  pkgurl=https://download.qt.io/official_releases/qt/$pkgmajorver/$pkgver/single/qt-everywhere-src-$pkgver.tar.xz
+  pkgurl=https://download.qt.io/archive/qt/$pkgmajorver/$pkgver/single/qt-everywhere-src-$pkgver.tar.xz
 
   download_md5 $pkgfn $pkgurl $pkgmd5
 
